@@ -1,50 +1,61 @@
 package project.controller;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import project.model.SecurityStaff;
 import project.repository.SecurityStaffRepository;
+import project.service.SecurityStaffService;
 
+import java.util.List;
+
+@RestController
+@RequestMapping("/staff")
 public class SecurityStaffController {
-    private final SecurityStaffRepository repository;
 
-    public SecurityStaffController(SecurityStaffRepository repository) {
-        this.repository = repository;
+    @Autowired
+    private SecurityStaffService service;
+
+    @Autowired
+    private SecurityStaffRepository repository;
+
+    // Create new staff
+    @PostMapping("/add")
+    public ResponseEntity<SecurityStaff> addStaff(@RequestBody SecurityStaff staff) {
+        SecurityStaff savedStaff = service.addStaff(staff);
+        return new ResponseEntity<>(savedStaff, HttpStatus.CREATED);
     }
 
+    // Get all staff
+    @GetMapping("/all")
     public List<SecurityStaff> getAllStaff() {
-        return repository.findAll();
+        return service.getAllStaff();
     }
 
+    // Find staff by ID
     @GetMapping("/{id}")
     public SecurityStaff getStaffById(@PathVariable Long id) {
-        return repository.findById(id).orElse(null);
+        return service.findStaffById(id);
     }
 
-    @PostMapping("/{id}")
-    public SecurityStaff addStaff(@RequestBody SecurityStaff staff) {
-        return repository.save(staff);
+    // Find staff by ID with exception handling
+    public SecurityStaff findStaffById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found"));
     }
 
-    @PutMapping("/{id}")
-    public SecurityStaff updateStaff(@PathVariable Long id, @RequestBody SecurityStaff updatedStaff) {
-        return repository.findById(id).map(staff -> {
-            staff.setName(updatedStaff.getName());
-            staff.setRole(updatedStaff.getRole());
-            staff.setShift(updatedStaff.getShift());
-            return repository.save(staff);
-        }).orElse(null);
+    // Update staff details
+    @PutMapping("/update/{id}")
+    public SecurityStaff updateStaff(@PathVariable Long id, @RequestBody SecurityStaff staffDetails) {
+        return service.updateStaff(id, staffDetails);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteStaff(@PathVariable Long id) {
-        repository.deleteById(id);
+// Delete staff by ID
+    @DeleteMapping("/delete/{id}")
+    public String deleteStaff(@PathVariable Long id) {
+        service.deleteStaff(id);
+        return "Staff deleted successfully!";
     }
 }

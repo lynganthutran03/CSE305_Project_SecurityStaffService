@@ -12,6 +12,8 @@ public class SecurityStaff {
     private String name;
     private String role;
     private String shift;
+
+    public SecurityStaff() {}
     
     public SecurityStaff(Long id, String name, String role, String shift) {
         this.id = id;

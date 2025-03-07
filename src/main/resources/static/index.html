@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+    <title>Security Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Security Management System</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Staff</a></li>
+            <li><a href="#">Reports</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <h2>Security Staff List</h2>
+        <button onclick="fetchStaffData()">Reload Staff Data</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Shift</th>
+                </tr>
+            </thead>
+            <tbody id="staffTableBody">
+                <!-- Data loads here -->
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Security Management</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
