@@ -1,6 +1,13 @@
 package project.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "security_staff")
+
 public class SecurityStaff {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String role;
