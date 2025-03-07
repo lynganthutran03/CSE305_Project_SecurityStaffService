@@ -1,6 +1,9 @@
-package project;
+package project.service;
 
 import java.util.List;
+
+import project.factory.SecurityStaffFactory;
+import project.model.SecurityStaff;
 
 public class SecurityStaffService {
     public SecurityStaff addStaff(Long id, String name, String role, String shift) {

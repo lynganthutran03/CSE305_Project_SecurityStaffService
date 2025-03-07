@@ -1,4 +1,4 @@
-package project;
+package project.model;
 
 public class SecurityStaff {
     private Long id;

@@ -1,4 +1,4 @@
-package project;
+package project.controller;
 
 import java.util.List;
 
@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import project.model.SecurityStaff;
+import project.repository.SecurityStaffRepository;
 
 public class SecurityStaffController {
     private final SecurityStaffRepository repository;

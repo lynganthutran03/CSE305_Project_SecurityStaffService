@@ -1,7 +1,9 @@
-package project;
+package project.factory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import project.model.SecurityStaff;
 
 public class SecurityStaffFactory {
     private static List<SecurityStaff> staffList = new ArrayList<>();
