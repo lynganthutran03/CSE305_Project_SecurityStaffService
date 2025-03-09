@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Management System</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
     <header>
@@ -12,10 +12,10 @@
     </header>
     
     <main>
-        <section id="login-section">
+        <section id="login-section" class="login-container">
             <h2>Login</h2>
             <label for="userId">ID:</label>
-            <input type="text" id="userId">
+            <input type="text" id="userId" placeholder="ID">
             <label for="password">Password:</label>
             <input type="password" id="password">
             <button onclick="login()">Login</button>
@@ -34,6 +34,6 @@
         </section>
     </main>
     
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>

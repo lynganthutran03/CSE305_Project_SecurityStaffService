@@ -3,30 +3,30 @@ package project.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "security_staff")
+@Table(name = "security_person")
 
 public class SecurityPerson {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String identityNumber;
+    private Long identityNumber;
     private String name;
     private String password;
     private String role; //Staff or Manager
 
     public SecurityPerson() {}
     
-    public SecurityPerson(String identityNumber, String name, String password, String role) {
+    public SecurityPerson(Long identityNumber, String name, String password, String role) {
         this.identityNumber = identityNumber;
         this.name = name;
         this.password = password;
         this.role = role;
     }
 
-    public String getIdentityNumber() {
+    public Long getIdentityNumber() {
         return identityNumber;
     }
 
-    public void setId(String identityNumber) {
+    public void setId(Long identityNumber) {
         this.identityNumber = identityNumber;
     }
 

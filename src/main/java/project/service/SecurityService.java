@@ -21,6 +21,9 @@ public class SecurityService {
     // Add new security staff
     public SecurityPerson addStaff(SecurityPerson staff) {
         SecurityPerson newStaff = SecurityFactory.createStaff(staff.getIdentityNumber(), staff.getName(), staff.getPassword(), staff.getRole());
+        if (newStaff == null) {
+            throw new RuntimeException("Error creating staff");
+        }
         return repository.save(newStaff);
     }    
 
@@ -30,13 +33,13 @@ public class SecurityService {
     }
 
     // Find staff by ID
-    public SecurityPerson findStaffById(String identityNumber) {
+    public SecurityPerson findStaffById(Long identityNumber) {
         Optional<SecurityPerson> staff = repository.findById(identityNumber);
         return staff.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found"));
     }
 
     //Update staff details
-    public SecurityPerson updateStaff(String identityNumber, SecurityPerson staffDetails) {
+    public SecurityPerson updateStaff(Long identityNumber, SecurityPerson staffDetails) {
         SecurityPerson staff = repository.findById(identityNumber).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found"));
         staff.setName(staffDetails.getName());
         staff.setPassword(staffDetails.getPassword());
@@ -45,7 +48,7 @@ public class SecurityService {
     }
 
     //Delete staff by ID
-    public void deleteStaff(String identityNumber) {
+    public void deleteStaff(Long identityNumber) {
         if (!repository.existsById(identityNumber)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff not found");
         }

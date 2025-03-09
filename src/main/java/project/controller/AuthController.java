@@ -20,7 +20,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String username, @RequestParam String password) {
-        return ResponseEntity.ok(authService.authenticate(username, password));
+    public ResponseEntity<String> login(@RequestBody User user) {
+        return ResponseEntity.ok(authService.authenticate(user.getUsername(), user.getPassword()));
     }
 }

@@ -8,7 +8,7 @@ import project.model.SecurityPerson;
 public class SecurityFactory {
     private static List<SecurityPerson> staffList = new ArrayList<>();
 
-    public static SecurityPerson createStaff(String identityNumber, String name, String password, String role) {
+    public static SecurityPerson createStaff(Long identityNumber, String name, String password, String role) {
         SecurityPerson staff = new SecurityPerson(identityNumber, name, password, role);
         staffList.add(staff);
         return staff;
@@ -18,7 +18,7 @@ public class SecurityFactory {
         return staffList;
     }
 
-    public static SecurityPerson getStaffById(String identityNumber) {
+    public static SecurityPerson getStaffById(Long identityNumber) {
         return staffList.stream()
                         .filter(staff -> staff.getIdentityNumber().equals(identityNumber))
                         .findFirst()

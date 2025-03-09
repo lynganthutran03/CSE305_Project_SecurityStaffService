@@ -7,11 +7,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "YourSecretKeyForJWTSigningShouldBeLongEnough";
+    private final String SECRET_KEY = Base64.getEncoder().encodeToString("your-secure-random-key-which-is-32-characters".getBytes());
     private final long EXPIRATION_TIME = 86400000;
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

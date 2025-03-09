@@ -32,21 +32,21 @@ public class SecurityController {
 
     // Find staff by Identity number
     @GetMapping("/{identityNumber}")
-    public ResponseEntity<SecurityPerson> getStaffByIdentityNumber(@PathVariable String identityNumber) {
+    public ResponseEntity<SecurityPerson> getStaffByIdentityNumber(@PathVariable Long identityNumber) {
         SecurityPerson staff = service.findStaffById(identityNumber);
         return ResponseEntity.ok(staff);
     }
 
     // Update staff details
     @PutMapping("/update/{identityNumber}")
-    public ResponseEntity<SecurityPerson> updateStaff(@PathVariable String identityNumber, @RequestBody SecurityPerson staffDetails) {
+    public ResponseEntity<SecurityPerson> updateStaff(@PathVariable Long identityNumber, @RequestBody SecurityPerson staffDetails) {
         SecurityPerson updateStaff = service.updateStaff(identityNumber, staffDetails);
         return ResponseEntity.ok(updateStaff);
     }
 
     // Delete staff by ID
     @DeleteMapping("/delete/{identityNumber}")
-    public ResponseEntity<String> deleteStaff(@PathVariable String identityNumber) {
+    public ResponseEntity<String> deleteStaff(@PathVariable Long identityNumber) {
         service.deleteStaff(identityNumber);
         return ResponseEntity.ok("Staff deleted successfully!");
     }

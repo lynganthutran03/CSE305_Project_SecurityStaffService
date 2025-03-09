@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import project.model.SecurityPerson;
 
 @Repository
-public interface SecurityRepository extends JpaRepository<SecurityPerson, String> {
+public interface SecurityRepository extends JpaRepository<SecurityPerson, Long> {
     List<SecurityPerson> findByRole(String role);
 }
 

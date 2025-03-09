@@ -1,75 +1,74 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the user is logged in
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-        showDashboard(user.role);
-    } else {
-        showLogin();
+    const userId = localStorage.getItem("userId");
+    const role = localStorage.getItem("role");
+    if (userId && role) {
+        showDashboard(role, userId);
     }
 });
 
-function showLogin() {
-    document.getElementById("app").innerHTML = `
-        <div class="login-container">
-            <h2>Login</h2>
-            <input type="text" id="username" placeholder="ID">
-            <input type="password" id="password" placeholder="Password">
-            <button onclick="handleLogin()">Login</button>
-        </div>
-    `;
-}
-
 async function handleLogin() {
-    const username = document.getElementById("username").value;
+    const userId = document.getElementById("userId").value;
     const password = document.getElementById("password").value;
 
     try {
-        const response = await fetch("http://localhost:8080/auth/login", {
+        const response = await fetch("http://localhost:9090/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ userId, password })
         });
 
-        if (!response.ok) throw new Error("Login failed");
+        if (!response.ok) {
+            alert("Login failed!");
+            return;
+        };
 
         const data = await response.json();
-        localStorage.setItem("user", JSON.stringify({ username, role: data.role, token: data.token }));
-        showDashboard(data.role);
+        console.log("Login respond: " + data);
+
+        localStorage.setItem("userId", data.id);
+        localStorage.setItem("role", data.role);
+        localStorage.setItem("token", data.token);
+
+        document.getElementById("login-section").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+
+        showDashboard(data.role, data.id);
     } catch (error) {
-        alert("Invalid login");
+        console.error("Login error: ", error);
     }
 }
 
-function showDashboard(role) {
-    let buttons = "";
+function showDashboard(role, userId) {
+    const navItems = document.getElementById("nav-items");
+    navItems.innerHTML = "";
+    document.getElementById("content-area").innerHTML = `<h3>Welcome, ID: ${userId}</h3>`
+
+    let buttons = [];
     
     if (role === "STAFF") {
-        buttons = `
-            <button onclick="loadContent('View Schedule')">View Schedule</button>
-            <button onclick="loadContent('Request Leave')">Request Leave</button>
-            <button onclick="loadContent('Check Leaves')">Check Leaves</button>
-        `;
+        buttons = [
+            {label: "View schedule", action: "viewSchedule()"},
+            {label: "Request leave", action: "requestLeave()"},
+            {label: "Check leaves", action: "checkLeaves()"},
+        ];
     } else if (role === "MANAGER") {
-        buttons = `
-            <button onclick="loadContent('Create Routine')">Create Routine</button>
-            <button onclick="loadContent('Check Leave Requests')">Check Leave Requests</button>
-            <button onclick="loadContent('Monitoring')">Monitoring</button>
-        `;
+        buttons = [
+            {label: "Create routine", action: "createRoutine()"},
+            {label: "Check leave requests", action: "checkLeaveRequests()"},
+            {label: "Monitoring", action: "monitoring()"},
+        ];
     }
 
-    document.getElementById("app").innerHTML = `
-        <h2>Dashboard (${role})</h2>
-        <div class="buttons">${buttons}</div>
-        <button onclick="handleLogout()">Logout</button>
-        <div id="content"></div>
-    `;
-}
-
-function loadContent(content) {
-    document.getElementById("content").innerHTML = `<h3>${content}</h3><p>Loading data...</p>`;
+    buttons.forEach(btn => {
+        const li = document.createElement("li");
+        li.innerHTML = `<button onclick="${btn.action}">${btn.label}</button>`;
+        navItems.appendChild(li);
+    });
 }
 
 function handleLogout() {
-    localStorage.removeItem("user");
-    showLogin();
+    localStorage.clear();
+    document.getElementById("login-section").style.display = "block";
+    document.getElementById("dashboard").style.display = "none";
 }
