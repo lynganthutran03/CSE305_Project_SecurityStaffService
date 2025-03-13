@@ -1,74 +1,36 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Check if the user is logged in
-    const userId = localStorage.getItem("userId");
-    const role = localStorage.getItem("role");
-    if (userId && role) {
-        showDashboard(role, userId);
-    }
-});
-
-async function handleLogin() {
-    const userId = document.getElementById("userId").value;
-    const password = document.getElementById("password").value;
-
-    try {
-        const response = await fetch("http://localhost:9090/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, password })
-        });
-
-        if (!response.ok) {
-            alert("Login failed!");
-            return;
-        };
-
-        const data = await response.json();
-        console.log("Login respond: " + data);
-
-        localStorage.setItem("userId", data.id);
-        localStorage.setItem("role", data.role);
-        localStorage.setItem("token", data.token);
-
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-
-        showDashboard(data.role, data.id);
-    } catch (error) {
-        console.error("Login error: ", error);
+function showFunction(functionName) {
+    const display = document.getElementById("functionDisplay");
+    switch (functionName) {
+        case "viewSchedule":
+            display.innerHTML = "<h3>Viewing Schedule</h3><p>Schedule details go here...</p>";
+            break;
+        case "requestLeave":
+            display.innerHTML = "<h3>Requesting Leave</h3><p>Leave request form goes here...</p>";
+            break;
+        case "checkLeaves":
+            display.innerHTML = "<h3>Checking Leaves</h3><p>Leave history displayed here...</p>";
+            break;
+        case "showSalary":
+            display.innerHTML = "<h3>Salary Details</h3><p>Salary information displayed here...</p>";
+            break;
+        case "viewRoutine":
+            display.innerHTML = "<h3>Viewing Routine</h3><p>Routine details displayed here...</p>";
+            break;
+        case "createRoutine":
+            display.innerHTML = "<h3>Creating Routine</h3><p>Routine management form goes here...</p>";
+            break;
+        case "checkLeaveRequests":
+            display.innerHTML = "<h3>Checking Leave Requests</h3><p>Manager can approve/reject leaves here...</p>";
+            break;
+        case "monitoring":
+            display.innerHTML = "<h3>Monitoring</h3><p>Live monitoring of staff displayed here...</p>";
+            break;
+        default:
+            display.innerHTML = "<h3>Unknown Action</h3><p>Please select a valid option.</p>";
     }
 }
 
-function showDashboard(role, userId) {
-    const navItems = document.getElementById("nav-items");
-    navItems.innerHTML = "";
-    document.getElementById("content-area").innerHTML = `<h3>Welcome, ID: ${userId}</h3>`
-
-    let buttons = [];
-    
-    if (role === "STAFF") {
-        buttons = [
-            {label: "View schedule", action: "viewSchedule()"},
-            {label: "Request leave", action: "requestLeave()"},
-            {label: "Check leaves", action: "checkLeaves()"},
-        ];
-    } else if (role === "MANAGER") {
-        buttons = [
-            {label: "Create routine", action: "createRoutine()"},
-            {label: "Check leave requests", action: "checkLeaveRequests()"},
-            {label: "Monitoring", action: "monitoring()"},
-        ];
-    }
-
-    buttons.forEach(btn => {
-        const li = document.createElement("li");
-        li.innerHTML = `<button onclick="${btn.action}">${btn.label}</button>`;
-        navItems.appendChild(li);
-    });
-}
-
-function handleLogout() {
-    localStorage.clear();
-    document.getElementById("login-section").style.display = "block";
-    document.getElementById("dashboard").style.display = "none";
+function logout() {
+    alert("Logging out...");
+    window.location.reload();
 }

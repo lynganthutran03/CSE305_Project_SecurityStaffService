@@ -4,36 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Management System</title>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Security Management System</h1>
     </header>
-    
+
     <main>
-        <section id="login-section" class="login-container">
-            <h2>Login</h2>
-            <label for="userId">ID:</label>
-            <input type="text" id="userId" placeholder="ID">
-            <label for="password">Password:</label>
-            <input type="password" id="password">
-            <button onclick="login()">Login</button>
-        </section>
-        
-        <section id="dashboard" style="display: none;">
-            <nav>
-                <ul id="nav-items">
-                    <!-- Buttons will be loaded dynamically -->
-                </ul>
-            </nav>
-            <div id="content-area">
-                <p>Only show the function after clicking any button</p>
-            </div>
+        <aside class="sidebar">
+            <h2>Staff</h2>
+            <button onclick="showFunction('viewSchedule')">View Schedule</button>
+            <button onclick="showFunction('requestLeave')">Request Leave</button>
+            <button onclick="showFunction('checkLeaves')">Check Leaves</button>
+            <button onclick="showFunction('showSalary')">Show Salary</button>
+            <button onclick="showFunction('viewRoutine')">View Routine</button>
             <button onclick="logout()">Log Out</button>
+
+            <h2>Manager</h2>
+            <button onclick="showFunction('createRoutine')">Create Routine</button>
+            <button onclick="showFunction('checkLeaveRequests')">Check Leave Requests</button>
+            <button onclick="showFunction('monitoring')">Monitoring</button>
+            <button onclick="showFunction('showSalary')">Show Salary</button>
+            <button onclick="showFunction('viewRoutine')">View Routine</button>
+            <button onclick="logout()">Log Out</button>
+        </aside>
+
+        <section class="content">
+            <h2>Function Output</h2>
+            <div id="functionDisplay">Click a button to display content.</div>
         </section>
     </main>
-    
-    <script src="script.js?v=2"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>

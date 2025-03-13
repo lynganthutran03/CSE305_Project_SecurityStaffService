@@ -3,10 +3,12 @@ D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\Demo
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\factory\SecurityFactory.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\model\User.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\controller\AuthController.java
+D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\service\CustomUserDetailsService.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\model\SecurityPerson.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\configuration\SecurityConfig.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\service\JwtUtil.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\service\AuthService.java
+D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\provider\CustomAuthProvider.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\repository\SecurityRepository.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\repository\UserRepository.java
 D:\CSE305\Project\CSE305_Project_SecurityStaffService\src\main\java\project\service\SecurityService.java

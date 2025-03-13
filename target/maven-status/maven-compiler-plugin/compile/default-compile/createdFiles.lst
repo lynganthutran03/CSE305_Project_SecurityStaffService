@@ -1,9 +1,12 @@
 project\configuration\SecurityConfig.class
 project\model\SecurityPerson.class
 project\model\Role.class
+project\provider\CustomAuthProvider.class
 project\controller\AuthController.class
 project\DemoApp.class
+project\provider\CustomAuthProvider$1.class
 project\service\JwtUtil.class
+project\service\CustomUserDetailsService.class
 project\controller\SecurityController.class
 project\service\SecurityService.class
 project\service\AuthService.class
