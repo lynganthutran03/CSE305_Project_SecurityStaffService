@@ -41,6 +41,17 @@ public class LeaveRequestService {
         return Optional.empty();
     }
 
+    // Get the number of approved leaves for a staff member
+    public int getApprovedLeaveCount(Long staffId) {
+        int count = 0;
+        for (LeaveRequest request : leaveRequests) {
+            if (request.getStaffId().equals(staffId) && request.getStatus() == LeaveStatus.APPROVED) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     // Get all leave requests (For Managers)
     public List<LeaveRequest> getAllRequests() {
         return leaveRequests;

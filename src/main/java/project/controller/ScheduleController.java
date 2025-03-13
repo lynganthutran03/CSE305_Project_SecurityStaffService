@@ -6,28 +6,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import project.model.SecuritySchedule;
+import project.model.Schedule;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/schedules")
-public class SecurityScheduleController {
-    private List<SecuritySchedule> schedules = new ArrayList<>();
+public class ScheduleController {
+    private List<Schedule> schedules = new ArrayList<>();
 
     @PostMapping("/add")
-    public ResponseEntity<String> addSchedule(@RequestBody SecuritySchedule schedule) {
+    public ResponseEntity<String> addSchedule(@RequestBody Schedule schedule) {
         schedules.add(schedule);
         return new ResponseEntity<>("Schedule added successfully", HttpStatus.CREATED);
     }
 
     @GetMapping("/view")
-    public ResponseEntity<List<SecuritySchedule>> getAllSchedules() {
+    public ResponseEntity<List<Schedule>> getAllSchedules() {
         return ResponseEntity.ok(schedules);
     }
 
     @PutMapping("/update/{staffId}")
-    public ResponseEntity<String> updateSchedule(@PathVariable int staffId, @RequestBody SecuritySchedule updatedSchedule) {
-        for (SecuritySchedule schedule : schedules) {
+    public ResponseEntity<String> updateSchedule(@PathVariable int staffId, @RequestBody Schedule updatedSchedule) {
+        for (Schedule schedule : schedules) {
             if (schedule.getStaffId() == staffId) {
                 schedule.setStaffId(updatedSchedule.getStaffId());
                 schedule.setDate(updatedSchedule.getDate());

@@ -1,6 +1,7 @@
 function showFunction(functionName) {
     const display = document.getElementById("functionDisplay");
     switch (functionName) {
+
         case "viewSchedule":
             display.innerHTML = `
                 <h3>Viewing Schedule</h3>
@@ -20,6 +21,7 @@ function showFunction(functionName) {
             `;
             setTimeout(fetchSchedules, 0);
             break;
+
         case "requestLeave":
             display.innerHTML = `
                 <h3>Request Leave</h3>
@@ -30,16 +32,33 @@ function showFunction(functionName) {
                 <button onclick="requestLeave()">Submit Leave Request</button>
             `;
             break;
+
         case "checkLeaves":
             display.innerHTML = `
+                <h3>Check Leaves</h3>
+                <label>Staff ID: <input type="text" id="staffIdCheck"></label>
+                <button onclick="fetchCheckLeaveRequestsForStaff()">Check</button>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Leave ID</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myLeaveRequestsList">
+                        <tr><td colspan="5">Enter Staff ID and click 'Check'.</td></tr>
+                    </tbody>
+                </table>
             `;
             break;
+
         case "showSalary":
             display.innerHTML = "<h3>Salary Details</h3><p>Salary information displayed here...</p>";
             break;
-        case "viewRoutine":
-            display.innerHTML = "<h3>Viewing Routine</h3><p>Routine details displayed here...</p>";
-            break;
+
         case "createRoutine":
             display.innerHTML = `
                 <h3>Creating Routine</h3>
@@ -50,6 +69,7 @@ function showFunction(functionName) {
                 <button onclick="addRoutine()">Add Routine</button>
             `;
             break;
+
         case "checkLeaveRequests":
             display.innerHTML = `
                 <h3>Check Leave Requests</h3>
@@ -72,9 +92,18 @@ function showFunction(functionName) {
             `;
             fetchLeaveRequests();
             break;
+
         case "monitoring":
-            display.innerHTML = "<h3>Monitoring</h3><p>Live monitoring of staff displayed here...</p>";
+            display.innerHTML = `
+                <h3>Monitoring</h3>
+                <h4>Salary Monitoring</h4>
+                <p>Salary details displayed here...</p>
+
+                <h4>Routine Monitoring</h4>
+                <p>Routine details displayed here...</p>
+            `;
             break;
+
         default:
             display.innerHTML = "<h3>Unknown Action</h3><p>Please select a valid option.</p>";
     }
@@ -227,6 +256,45 @@ function updateLeaveStatus(leaveId, status) {
         fetchLeaveRequests();  // Refresh the list of leave requests
     })
     .catch(error => console.error("Error updating leave status:", error));
+}
+
+function fetchCheckLeaveRequestsForStaff() {
+    const staffId = document.getElementById("staffIdCheck").value;
+    if (!staffId) {
+        alert("Please enter a Staff ID.");
+        return;
+    }
+
+    fetch(`http://localhost:8080/api/leaves/staff/${staffId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
+            return response.json();
+        })
+        .then(data => {
+            const myLeaveRequestsList = document.getElementById("myLeaveRequestsList");
+            myLeaveRequestsList.innerHTML = "";
+
+            // Filter leave requests for the given staff ID
+            const myLeaves = data.filter(leave => leave.staffId == staffId);
+
+            if (myLeaves.length === 0) {
+                myLeaveRequestsList.innerHTML = "<tr><td colspan='5'>No leave requests found.</td></tr>";
+                return;
+            }
+
+            myLeaves.forEach(leave => {
+                myLeaveRequestsList.innerHTML += `
+                    <tr>
+                        <td>${leave.leaveId}</td>
+                        <td>${leave.startDate}</td>
+                        <td>${leave.endDate}</td>
+                        <td>${leave.reason}</td>
+                        <td>${leave.status}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(error => console.error("Error fetching leave requests:", error));
 }
 
 // Logout function

@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecuritySchedule {
+public class Schedule {
     private Long staffId;
     private String place;
     private String shiftTime;
     private LocalDate date;
-    private static List<SecuritySchedule> schedules = new ArrayList<>();
+    private static List<Schedule> schedules = new ArrayList<>();
 
-    public SecuritySchedule() {}
+    public Schedule() {}
 
-    public SecuritySchedule(Long staffId, String place, String shiftTime, LocalDate date) {
+    public Schedule(Long staffId, String place, String shiftTime, LocalDate date) {
         this.staffId = staffId;
         this.place = place;
         this.shiftTime = shiftTime;
@@ -52,11 +52,11 @@ public class SecuritySchedule {
         this.date = date;
     }
 
-    public static void addSchedule(SecuritySchedule schedule) {
+    public static void addSchedule(Schedule schedule) {
         schedules.add(schedule);
     }
 
-    public static List<SecuritySchedule> getAllSchedules() {
+    public static List<Schedule> getAllSchedules() {
         return schedules;
     }
 }

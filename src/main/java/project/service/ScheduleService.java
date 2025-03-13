@@ -1,29 +1,29 @@
 package project.service;
 
 import org.springframework.stereotype.Service;
-import project.model.SecuritySchedule;
+import project.model.Schedule;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SecurityScheduleService {
-    private List<SecuritySchedule> schedules = new ArrayList<>();
+public class ScheduleService {
+    private List<Schedule> schedules = new ArrayList<>();
 
-    public List<SecuritySchedule> getAllSchedules() {
+    public List<Schedule> getAllSchedules() {
         return schedules;
     }
 
-    public Optional<SecuritySchedule> getScheduleById(Long staffId) {
+    public Optional<Schedule> getScheduleById(Long staffId) {
         return schedules.stream()
                 .filter(schedule -> schedule.getStaffId().equals(staffId))
                 .findFirst();
     }
 
-    public List<SecuritySchedule> getSchedulesByStaff(Long staffId) {
-        List<SecuritySchedule> staffSchedules = new ArrayList<>();
-        for (SecuritySchedule schedule : schedules) {
+    public List<Schedule> getSchedulesByStaff(Long staffId) {
+        List<Schedule> staffSchedules = new ArrayList<>();
+        for (Schedule schedule : schedules) {
             if (schedule.getStaffId().equals(staffId)) {
                 staffSchedules.add(schedule);
             }
@@ -31,9 +31,9 @@ public class SecurityScheduleService {
         return staffSchedules;
     }
 
-    public List<SecuritySchedule> getSchedulesByPlace(String place) {
-        List<SecuritySchedule> placeSchedules = new ArrayList<>();
-        for (SecuritySchedule schedule : schedules) {
+    public List<Schedule> getSchedulesByPlace(String place) {
+        List<Schedule> placeSchedules = new ArrayList<>();
+        for (Schedule schedule : schedules) {
             if (schedule.getPlace().equalsIgnoreCase(place)) {
                 placeSchedules.add(schedule);
             }
@@ -41,7 +41,7 @@ public class SecurityScheduleService {
         return placeSchedules;
     }
 
-    public SecuritySchedule addSchedule(SecuritySchedule schedule) {
+    public Schedule addSchedule(Schedule schedule) {
         schedules.add(schedule);
         return schedule;
     }
