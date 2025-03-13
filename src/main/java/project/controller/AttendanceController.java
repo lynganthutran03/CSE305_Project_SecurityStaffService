@@ -1,50 +1,26 @@
 package project.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import project.model.Attendance;
-import project.service.AttendanceService;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/attendance")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*")  // Allow frontend requests
 public class AttendanceController {
+    private final List<Attendance> attendanceRecords = new ArrayList<>();
 
-    @Autowired
-    private AttendanceService attendanceService;
-
-    @GetMapping
-    public List<Attendance> getAllAttendance() {
-        return attendanceService.getAllAttendance();
+    // ✅ Use @RequestBody instead of @RequestParam
+    @PostMapping("/mark")
+    public String markAttendance(@RequestBody Attendance attendance) {
+        attendanceRecords.add(attendance);
+        return "Attendance marked successfully for Staff ID: " + attendance.getStaffId();
     }
 
-    @GetMapping("/{id}")
-    public Optional<Attendance> getAttendanceById(@PathVariable Long id) {
-        return attendanceService.getAttendanceById(id);
-    }
-
-    @GetMapping("/staff/{staffId}")
-    public List<Attendance> getAttendanceByStaff(@PathVariable Long staffId) {
-        return attendanceService.getAttendanceByStaff(staffId);
-    }
-
-    @GetMapping("/date/{date}")
-    public List<Attendance> getAttendanceByDate(@PathVariable String date) {
-        return attendanceService.getAttendanceByDate(LocalDate.parse(date));
-    }
-
-    @PostMapping
-    public Attendance markAttendance(@RequestBody Attendance attendance) {
-        return attendanceService.markAttendance(attendance);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteAttendance(@PathVariable Long id) {
-        attendanceService.deleteAttendance(id);
+    @GetMapping("/view")
+    public List<Attendance> viewAttendance() {
+        return attendanceRecords;
     }
 }

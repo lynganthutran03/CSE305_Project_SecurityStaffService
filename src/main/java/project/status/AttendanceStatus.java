@@ -1,4 +1,4 @@
-package project.model;
+package project.status;
 
 public enum AttendanceStatus {
     PRESENT,

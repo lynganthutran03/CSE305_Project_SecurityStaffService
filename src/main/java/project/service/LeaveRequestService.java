@@ -1,37 +1,48 @@
 package project.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 
-import project.model.LeaveRequest;
-import project.model.LeaveStatus;
-import project.respository.LeaveRequestRepo;
+import project.request.LeaveRequest;
+import project.status.LeaveStatus;
 
 @Service
 public class LeaveRequestService {
-    private final LeaveRequestRepo leaveRequestRepository;
+    private final List<LeaveRequest> leaveRequests = new ArrayList<>();
 
-    public LeaveRequestService(LeaveRequestRepo leaveRequestRepository) {
-        this.leaveRequestRepository = leaveRequestRepository;
-    }
-
+    // Add a new leave request (Defaults to PENDING)
     public LeaveRequest requestLeave(LeaveRequest leaveRequest) {
         leaveRequest.setStatus(LeaveStatus.PENDING);
-        return leaveRequestRepository.save(leaveRequest);
+        leaveRequests.add(leaveRequest);
+        return leaveRequest;
     }
 
+    // Get all pending leave requests
     public List<LeaveRequest> getPendingRequests() {
-        return leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
+        List<LeaveRequest> pendingRequests = new ArrayList<>();
+        for (LeaveRequest request : leaveRequests) {
+            if (request.getStatus() == LeaveStatus.PENDING) {
+                pendingRequests.add(request);
+            }
+        }
+        return pendingRequests;
     }
 
-    public Optional<LeaveRequest> updateLeaveStatus(Long id, LeaveStatus status) {
-        Optional<LeaveRequest> request = leaveRequestRepository.findById(id);
-        request.ifPresent(r -> {
-            r.setStatus(status);
-            leaveRequestRepository.save(r);
-        });
-        return request;
+    // Update leave request status
+    public Optional<LeaveRequest> updateLeaveStatus(Long staffId, LeaveStatus status) {
+        for (LeaveRequest request : leaveRequests) {
+            if (request.getStaffId().equals(staffId)) {
+                request.setStatus(status);
+                return Optional.of(request);
+            }
+        }
+        return Optional.empty();
+    }
+
+    // Get all leave requests (For Managers)
+    public List<LeaveRequest> getAllRequests() {
+        return leaveRequests;
     }
 }

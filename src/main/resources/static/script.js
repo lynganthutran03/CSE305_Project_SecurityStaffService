@@ -80,6 +80,33 @@ function showFunction(functionName) {
     }
 }
 
+// Fetch schedules from the backend (list stored in-memory on the backend)
+function fetchSchedules() {
+    fetch("http://localhost:8080/api/schedules/view")
+        .then(response => response.json())
+        .then(data => {
+            const scheduleList = document.getElementById("scheduleList");
+            scheduleList.innerHTML = ""; // Clear the existing schedule list
+
+            if (data.length === 0) {
+                scheduleList.innerHTML = "<tr><td colspan='4'>No schedules available.</td></tr>";
+                return;
+            }
+
+            data.forEach(schedule => {
+                let row = `<tr>
+                    <td>${schedule.staffId}</td>
+                    <td>${schedule.place}</td>
+                    <td>${schedule.shiftTime}</td>
+                    <td>${schedule.date}</td>
+                </tr>`;
+                scheduleList.innerHTML += row;
+            });
+        })
+        .catch(error => console.error("Error:", error));
+}
+
+// Add routine (send data to the backend to store in the list)
 function addRoutine() {
     let staffId = document.getElementById("staffId").value;
     let place = document.getElementById("place").value;
@@ -111,31 +138,7 @@ function addRoutine() {
     });
 }
 
-function fetchSchedules() {
-    fetch("http://localhost:8080/api/schedules/view")
-    .then(response => response.json())
-    .then(data => {
-        let scheduleList = document.getElementById("scheduleList");
-        if (!scheduleList) {
-            console.error("Error: scheduleList element not found!");
-            return;
-        }
-
-        scheduleList.innerHTML = "";
-
-        data.forEach(schedule => {
-            let row = `<tr>
-                <td>${schedule.staffId}</td>
-                <td>${schedule.place}</td>
-                <td>${schedule.shiftTime}</td>
-                <td>${schedule.date}</td>
-            </tr>`;
-            scheduleList.innerHTML += row;
-        });
-    })
-    .catch(error => console.error("Error:", error));
-}
-
+// Request leave (send data to the backend)
 function requestLeave() {
     const staffId = document.getElementById("staffId").value;
     const startDate = document.getElementById("startDate").value;
@@ -161,15 +164,16 @@ function requestLeave() {
     })
     .then(response => {
         if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
-        return response.json();
+        return response.json();  // Parse JSON response
     })
     .then(data => {
-        alert("Leave requested successfully!");
+        alert(data.message);  // Access the message from the response JSON
         showFunction('viewSchedule');
     })
     .catch(error => console.error("Error requesting leave:", error));
 }
 
+// Fetch leave requests (from the backend)
 function fetchLeaveRequests() {
     fetch("http://localhost:8080/api/leaves")
         .then(response => {
@@ -188,15 +192,15 @@ function fetchLeaveRequests() {
             data.forEach(leave => {
                 leaveRequestsList.innerHTML += `
                     <tr>
-                        <td>${leave.id}</td>
+                        <td>${leave.leaveId}</td>
                         <td>${leave.staffId}</td>
                         <td>${leave.startDate}</td>
                         <td>${leave.endDate}</td>
                         <td>${leave.reason}</td>
                         <td>${leave.status}</td>
                         <td>
-                            <button onclick="updateLeaveStatus(${leave.id}, 'APPROVED')">Approve</button>
-                            <button onclick="updateLeaveStatus(${leave.id}, 'REJECTED')">Reject</button>
+                            <button onclick="updateLeaveStatus(${leave.leaveId}, 'APPROVED')">Approve</button>
+                            <button onclick="updateLeaveStatus(${leave.leaveId}, 'REJECTED')">Reject</button>
                         </td>
                     </tr>
                 `;
@@ -205,28 +209,7 @@ function fetchLeaveRequests() {
         .catch(error => console.error("Error fetching leave requests:", error));
 }
 
-function approveLeave(id) {
-    fetch(`${API_BASE_URL}/approve/${id}`, { method: "PUT" })
-    .then(response => {
-        if (response.ok) {
-            alert("Leave Approved");
-            fetchLeaveRequests();
-        }
-    })
-    .catch(error => console.error("Error approving leave:", error));
-}
-
-function rejectLeave(id) {
-    fetch(`${API_BASE_URL}/reject/${id}`, { method: "PUT" })
-    .then(response => {
-        if (response.ok) {
-            alert("Leave Rejected");
-            fetchLeaveRequests();
-        }
-    })
-    .catch(error => console.error("Error rejecting leave:", error));
-}
-
+// Update leave status (send the update to the backend)
 function updateLeaveStatus(leaveId, status) {
     fetch(`http://localhost:8080/api/leaves/${leaveId}/status`, {
         method: "PUT",
@@ -236,16 +219,17 @@ function updateLeaveStatus(leaveId, status) {
         body: JSON.stringify({ status: status })
     })
     .then(response => {
-        if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
+        if (!response.ok) throw new Error("Error updating leave status: " + response.status);
         return response.json();
     })
     .then(data => {
         alert(`Leave request ${status.toLowerCase()} successfully!`);
-        fetchLeaveRequests(); // Refresh leave requests after update
+        fetchLeaveRequests();  // Refresh the list of leave requests
     })
     .catch(error => console.error("Error updating leave status:", error));
 }
 
+// Logout function
 function logout() {
     alert("Logging out...");
     window.location.reload();

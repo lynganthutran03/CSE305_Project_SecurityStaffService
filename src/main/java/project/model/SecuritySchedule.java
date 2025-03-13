@@ -1,28 +1,62 @@
 package project.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "schedule")
 public class SecuritySchedule {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "staff_id", nullable = false)
-    private SecurityStaff staff;
-
+    private Long staffId;
     private String place;
     private String shiftTime;
-    private String date;
+    private LocalDate date;
+    private static List<SecuritySchedule> schedules = new ArrayList<>();
 
-    @Column(name = "created_at", updatable = false)
-    private String createdAt;
+    public SecuritySchedule() {}
+
+    public SecuritySchedule(Long staffId, String place, String shiftTime, LocalDate date) {
+        this.staffId = staffId;
+        this.place = place;
+        this.shiftTime = shiftTime;
+        this.date = date;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    public String getShiftTime() {
+        return shiftTime;
+    }
+
+    public void setShiftTime(String shiftTime) {
+        this.shiftTime = shiftTime;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public static void addSchedule(SecuritySchedule schedule) {
+        schedules.add(schedule);
+    }
+
+    public static List<SecuritySchedule> getAllSchedules() {
+        return schedules;
+    }
 }

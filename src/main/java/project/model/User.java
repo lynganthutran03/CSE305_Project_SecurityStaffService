@@ -1,23 +1,24 @@
 package project.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-
-@Entity
-@Table(name = "users") // Ensure the table name matches your database
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private static long counter = 1; // Used for generating unique IDs
     private Long id;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true)
     private String identityNumber;
+
+    public User(String name, String identityNumber) {
+        this.id = counter++;
+        this.name = name;
+        this.identityNumber = identityNumber;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getIdentityNumber() { return identityNumber; }
+    public void setIdentityNumber(String identityNumber) { this.identityNumber = identityNumber; }
 }

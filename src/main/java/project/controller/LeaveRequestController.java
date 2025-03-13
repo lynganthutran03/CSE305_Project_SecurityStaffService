@@ -1,45 +1,55 @@
 package project.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import project.model.LeaveRequest;
-import project.model.LeaveStatus;
-import project.service.LeaveRequestService;
-
-import java.util.List;
-import java.util.Optional;
+import project.model.ResponseMessage;
+import project.request.LeaveRequest;
+import project.request.LeaveStatusUpdateRequest;
+import project.status.LeaveStatus;
+import project.storage.LeaveRequestStorage;
 
 @RestController
 @RequestMapping("/api/leaves")
-@CrossOrigin(origins = "*") // Allow frontend requests
+@CrossOrigin(origins = "*")
 public class LeaveRequestController {
-    private final LeaveRequestService leaveRequestService;
 
-    public LeaveRequestController(LeaveRequestService leaveRequestService) {
-        this.leaveRequestService = leaveRequestService;
-    }
-
+    // Use LeaveRequestStorage to manage leave requests
     @PostMapping("/request")
-    public ResponseEntity<LeaveRequest> requestLeave(@RequestBody LeaveRequest leaveRequest) {
-        LeaveRequest savedRequest = leaveRequestService.requestLeave(leaveRequest);
-        return ResponseEntity.ok(savedRequest);
+    public ResponseEntity<ResponseMessage> requestLeave(@RequestBody LeaveRequest request) {
+        request.setStatus(LeaveStatus.PENDING); // Default to PENDING
+        LeaveRequestStorage.addLeaveRequest(request); // Add request to storage
+        ResponseMessage responseMessage = new ResponseMessage("Leave request submitted successfully", HttpStatus.CREATED.value());
+        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
     }
 
-    @GetMapping("/pending")
-    public ResponseEntity<List<LeaveRequest>> getPendingRequests() {
-        return ResponseEntity.ok(leaveRequestService.getPendingRequests());
+    @GetMapping
+    public ResponseEntity<List<LeaveRequest>> getAllLeaveRequests() {
+        return ResponseEntity.ok(LeaveRequestStorage.getAllLeaveRequests()); // Get all leave requests from storage
     }
 
-    @PutMapping("/approve/{id}")
-    public ResponseEntity<String> approveLeave(@PathVariable Long id) {
-        Optional<LeaveRequest> request = leaveRequestService.updateLeaveStatus(id, LeaveStatus.APPROVED);
-        return request.isPresent() ? ResponseEntity.ok("Leave Approved") : ResponseEntity.notFound().build();
-    }
+    @PutMapping("/{leaveId}/status")
+    public ResponseEntity<String> updateLeaveStatus(@PathVariable("leaveId") int leaveId, 
+                                                 @RequestBody LeaveStatusUpdateRequest statusUpdate) {
+        LeaveRequest leaveRequest = LeaveRequestStorage.getAllLeaveRequests()
+            .stream()
+            .filter(leave -> leave.getLeaveId() == leaveId)
+            .findFirst()
+            .orElse(null);
 
-    @PutMapping("/reject/{id}")
-    public ResponseEntity<String> rejectLeave(@PathVariable Long id) {
-        Optional<LeaveRequest> request = leaveRequestService.updateLeaveStatus(id, LeaveStatus.REJECTED);
-        return request.isPresent() ? ResponseEntity.ok("Leave Rejected") : ResponseEntity.notFound().build();
+        if (leaveRequest == null) {
+            return new ResponseEntity<>("Leave request not found", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            LeaveStatus leaveStatus = LeaveStatus.valueOf(statusUpdate.getStatus().toUpperCase()); // Convert String to Enum
+            leaveRequest.setStatus(leaveStatus);
+            return new ResponseEntity<>("Leave request updated successfully", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Invalid status: " + statusUpdate.getStatus(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

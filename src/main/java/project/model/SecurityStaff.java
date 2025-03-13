@@ -1,20 +1,13 @@
 package project.model;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name = "security_person")
 public class SecurityStaff {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private static long counter = 1; // Used for generating unique IDs
     private Long id;
-    
     private String name;
 
-    public SecurityStaff() {}
-
     public SecurityStaff(String name) {
+        this.id = counter++;
         this.name = name;
     }
 
