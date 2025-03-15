@@ -65,4 +65,14 @@ public class LeaveRequestController {
 
         return ResponseEntity.ok(staffLeave);
     }
+
+    @GetMapping("/count/{staffId}")
+    public ResponseEntity<Integer> getApprovedLeaveCount(@PathVariable("staffId") Long staffId) {
+        int count = (int)LeaveRequestStorage.getAllLeaveRequests()
+            .stream()
+            .filter(request -> request.getStaffId().equals(staffId) && request.getStatus() == LeaveStatus.APPROVED)
+            .count();
+
+        return ResponseEntity.ok(count);
+    }
 }

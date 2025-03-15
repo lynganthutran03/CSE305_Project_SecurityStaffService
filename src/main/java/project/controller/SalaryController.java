@@ -5,6 +5,7 @@ import project.service.SalaryService;
 
 @RestController
 @RequestMapping("/api/salary")
+@CrossOrigin(origins = "*")
 public class SalaryController {
     private final SalaryService salaryService;
 
