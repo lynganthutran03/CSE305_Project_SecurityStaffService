@@ -38,11 +38,11 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleService.getAllSchedules());
     }
 
-    @PutMapping("/update/{staffId}")
-    public ResponseEntity<String> updateSchedule(@PathVariable int staffId, @RequestBody Schedule updatedSchedule) {
+    @PutMapping("/update/{identityNumber}")
+    public ResponseEntity<String> updateSchedule(@PathVariable String identityNumber, @RequestBody Schedule updatedSchedule) {
         for (Schedule schedule : schedules) {
-            if (schedule.getStaffId() == staffId) {
-                schedule.setStaffId(updatedSchedule.getStaffId());
+            if (schedule.getIdentityNumber() == identityNumber) {
+                schedule.setIdentityNumber(updatedSchedule.getIdentityNumber());
                 schedule.setDate(updatedSchedule.getDate());
                 schedule.setShiftTime(updatedSchedule.getShiftTime());
                 return ResponseEntity.ok("Schedule updated successfully");
@@ -53,7 +53,7 @@ public class ScheduleController {
 
     @GetMapping("/filter")
     public ResponseEntity<List<Schedule>> getFilterSchedules(
-            @RequestParam(required = false) Long staffId,
+            @RequestParam(required = false) String identityNumber,
             @RequestParam(required = false) String date,
             @RequestParam(required = false) String place) {
         LocalDate parsedDate = null;
@@ -66,14 +66,14 @@ public class ScheduleController {
             }
         }
     
-        List<Schedule> filteredSchedules = scheduleService.filterSchedules(staffId, parsedDate, place);
+        List<Schedule> filteredSchedules = scheduleService.filterSchedules(identityNumber, parsedDate, place);
     
         return ResponseEntity.ok(filteredSchedules != null ? filteredSchedules : new ArrayList<>());
     }
 
-    @DeleteMapping("/delete/{staffId}")
-    public ResponseEntity<String> deleteSchedule(@PathVariable int staffId) {
-        boolean removed = scheduleService.deleteSchedule((long) staffId);
+    @DeleteMapping("/delete/{identityNumber}")
+    public ResponseEntity<String> deleteSchedule(@PathVariable String identityNumber) {
+        boolean removed = scheduleService.deleteSchedule((String) identityNumber);
         if (removed) {
             return ResponseEntity.ok("Schedule deleted successfully");
         } else {

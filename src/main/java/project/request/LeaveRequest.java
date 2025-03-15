@@ -7,7 +7,7 @@ import project.status.LeaveStatus;
 public class LeaveRequest {
     private static int idCounter = 1;  // Static counter to generate unique leave IDs
     private int leaveId;
-    private Long staffId;
+    private String identityNumber;
     private LocalDate startDate;
     private LocalDate endDate;
     private String reason;
@@ -17,9 +17,9 @@ public class LeaveRequest {
         this.leaveId = idCounter++;  // Assign a unique ID and increment the counter
     }
 
-    public LeaveRequest(Long staffId, LocalDate startDate, LocalDate endDate, String reason, LeaveStatus status) {
+    public LeaveRequest(String identityNumber, LocalDate startDate, LocalDate endDate, String reason, LeaveStatus status) {
         this();
-        this.staffId = staffId;
+        this.identityNumber = identityNumber;
         this.startDate = startDate;
         this.endDate = endDate;
         this.reason = reason;
@@ -30,12 +30,12 @@ public class LeaveRequest {
         return leaveId;
     }
 
-    public Long getStaffId() {
-        return staffId;
+    public String getIdentityNumber() {
+        return identityNumber;
     }
 
-    public void setStaffId(Long staffId) {
-        this.staffId = staffId;
+    public void setStaffId(String identityNumber) {
+        this.identityNumber = identityNumber;
     }
 
     public LocalDate getStartDate() {

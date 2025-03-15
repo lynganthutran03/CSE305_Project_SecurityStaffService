@@ -17,16 +17,16 @@ public class AttendanceService {
         return new ArrayList<>(attendanceList);
     }
 
-    public Optional<Attendance> getAttendanceById(Long id) {
+    public Optional<Attendance> getAttendanceByIdentityNumber(String identityNumber) {
         return attendanceList.stream()
-                .filter(attendance -> attendance.getStaffId() == id)
+                .filter(attendance -> attendance.getIdentityNumber() == identityNumber)
                 .findFirst();
     }
 
-    public List<Attendance> getAttendanceByStaff(Long staffId) {
+    public List<Attendance> getAttendanceByStaff(String identityNumber) {
         List<Attendance> result = new ArrayList<>();
         for (Attendance attendance : attendanceList) {
-            if (attendance.getStaffId() == staffId) {
+            if (attendance.getIdentityNumber() == identityNumber) {
                 result.add(attendance);
             }
         }
@@ -48,7 +48,7 @@ public class AttendanceService {
         return attendance;
     }
 
-    public void deleteAttendance(Long id) {
-        attendanceList.removeIf(attendance -> attendance.getStaffId() == id);
+    public void deleteAttendance(String identityNumber) {
+        attendanceList.removeIf(attendance -> attendance.getIdentityNumber() == identityNumber);
     }
 }

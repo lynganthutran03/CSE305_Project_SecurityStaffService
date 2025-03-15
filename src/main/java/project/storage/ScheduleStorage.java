@@ -15,10 +15,10 @@ public class ScheduleStorage {
         return schedules;
     }
 
-    public static List<Schedule> findByStaffId(int staffId) {
+    public static List<Schedule> findByStaffId(String identityNumber) {
         List<Schedule> result = new ArrayList<>();
         for (Schedule schedule : schedules) {
-            if (schedule.getStaffId() == staffId) {
+            if (schedule.getIdentityNumber() == identityNumber) {
                 result.add(schedule);
             }
         }

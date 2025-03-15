@@ -44,6 +44,35 @@
         <version>3.2.2</version>
     </dependency>
 
+    <!-- Spring Boot Security Starter -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+        <version>3.2.2</version>
+    </dependency>
+
+    <!-- Spring Boot Starter for JPA -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+        <version>3.2.2</version>
+    </dependency>
+
+    <!-- MySQL Driver -->
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.33</version>
+        <scope>runtime</scope>
+    </dependency>
+
+    <!-- Jakarta Persistence API -->
+    <dependency>
+        <groupId>jakarta.persistence</groupId>
+        <artifactId>jakarta.persistence-api</artifactId>
+        <version>3.1.0</version> <!-- Ensure you use the latest version -->
+    </dependency>
+
     <!-- Lombok for Getter/Setter Annotations -->
     <dependency>
         <groupId>org.projectlombok</groupId>
@@ -72,6 +101,13 @@
         <artifactId>junit-jupiter-engine</artifactId>
         <version>5.9.2</version>
         <scope>test</scope>
+    </dependency>
+
+    <!-- Hibernate Core (Optional, but helps with JPA) -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>6.2.0.Final</version>
     </dependency>
   </dependencies>
 

@@ -13,8 +13,8 @@ public class SalaryController {
         this.salaryService = salaryService;
     }
 
-    @GetMapping("/{staffId}")
-    public double getSalary(@PathVariable Long staffId) {
-        return salaryService.calculateSalary(staffId);
+    @GetMapping("/{identityNumber}")
+    public double getSalary(@PathVariable String identityNumber) {
+        return salaryService.calculateSalary(identityNumber);
     }
 }

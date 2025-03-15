@@ -15,7 +15,7 @@ public class ScheduleService {
 
     public boolean isScheduleValid(Schedule newSchedule) {
         return schedules.stream()
-            .noneMatch(s -> s.getStaffId().equals(newSchedule.getStaffId()) &&
+            .noneMatch(s -> s.getIdentityNumber().equals(newSchedule.getIdentityNumber()) &&
                             s.getDate().equals(newSchedule.getDate()) &&
                             s.getPlace().equalsIgnoreCase(newSchedule.getPlace()));
     }
@@ -34,16 +34,16 @@ public class ScheduleService {
         return schedules;
     }
 
-    public Optional<Schedule> getScheduleById(Long staffId) {
+    public Optional<Schedule> getScheduleById(String identityNumber) {
         return schedules.stream()
-                .filter(schedule -> schedule.getStaffId().equals(staffId))
+                .filter(schedule -> schedule.getIdentityNumber().equals(identityNumber))
                 .findFirst();
     }
 
-    public List<Schedule> getSchedulesByStaff(Long staffId) {
+    public List<Schedule> getSchedulesByStaff(String identityNumber) {
         List<Schedule> staffSchedules = new ArrayList<>();
         for (Schedule schedule : schedules) {
-            if (schedule.getStaffId().equals(staffId)) {
+            if (schedule.getIdentityNumber().equals(identityNumber)) {
                 staffSchedules.add(schedule);
             }
         }
@@ -60,15 +60,15 @@ public class ScheduleService {
         return placeSchedules;
     }
 
-    public List<Schedule> filterSchedules(Long staffId, LocalDate date, String place) {
+    public List<Schedule> filterSchedules(String identityNumber, LocalDate date, String place) {
         return schedules.stream()
-            .filter(s -> (staffId == null || s.getStaffId().equals(staffId)))
+            .filter(s -> (identityNumber == null || s.getIdentityNumber().equals(identityNumber)))
             .filter(s -> (date == null || s.getDate().equals(date)))
             .filter(s -> (place == null || s.getPlace().equalsIgnoreCase(place)))
             .collect(Collectors.toList());
     }
 
-    public boolean deleteSchedule(Long staffId) {
-        return schedules.removeIf(schedule -> schedule.getStaffId().equals(staffId));
+    public boolean deleteSchedule(String identityNumber) {
+        return schedules.removeIf(schedule -> schedule.getIdentityNumber().equals(identityNumber));
     }
 }

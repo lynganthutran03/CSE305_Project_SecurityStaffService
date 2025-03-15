@@ -4,8 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
+
 public class Schedule {
-    private Long staffId;
+    @Column(name = "identity_number", nullable = false)
+    private String identityNumber;
     private String place;
     private String shiftTime;
     private LocalDate date;
@@ -13,19 +16,19 @@ public class Schedule {
 
     public Schedule() {}
 
-    public Schedule(Long staffId, String place, String shiftTime, LocalDate date) {
-        this.staffId = staffId;
+    public Schedule(String identityNumber, String place, String shiftTime, LocalDate date) {
+        this.identityNumber = identityNumber;
         this.place = place;
         this.shiftTime = shiftTime;
         this.date = date;
     }
-
-    public Long getStaffId() {
-        return staffId;
+    
+    public String getIdentityNumber() {
+        return identityNumber;
     }
 
-    public void setStaffId(Long staffId) {
-        this.staffId = staffId;
+    public void setIdentityNumber(String identityNumber) {
+        this.identityNumber = identityNumber;
     }
 
     public String getPlace() {

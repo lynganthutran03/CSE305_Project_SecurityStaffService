@@ -16,10 +16,10 @@ public class AttendanceStorage {
         return attendanceList;
     }
 
-    public static List<Attendance> findByStaffId(Long staffId) {
+    public static List<Attendance> findByStaffId(String identityNumber) {
         List<Attendance> result = new ArrayList<>();
         for (Attendance att : attendanceList) {
-            if (att.getStaffId().equals(staffId)) {
+            if (att.getIdentityNumber().equals(identityNumber)) {
                 result.add(att);
             }
         }

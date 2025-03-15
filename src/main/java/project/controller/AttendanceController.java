@@ -16,7 +16,7 @@ public class AttendanceController {
     @PostMapping("/mark")
     public String markAttendance(@RequestBody Attendance attendance) {
         attendanceRecords.add(attendance);
-        return "Attendance marked successfully for Staff ID: " + attendance.getStaffId();
+        return "Attendance marked successfully for Staff ID: " + attendance.getIdentityNumber();
     }
 
     @GetMapping("/view")

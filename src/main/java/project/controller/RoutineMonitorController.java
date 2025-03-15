@@ -28,12 +28,12 @@ public class RoutineMonitorController {
     
     @GetMapping("/schedules")
     public ResponseEntity<List<Schedule>> getSchedules(
-            @RequestParam(required = false) Long staffId, @RequestParam(required = false) LocalDate date, @RequestParam(required = false) String place) {
+            @RequestParam(required = false) String identityNumber, @RequestParam(required = false) LocalDate date, @RequestParam(required = false) String place) {
 
-        List<Schedule> schedules = scheduleService.filterSchedules(staffId, date, place);
-        if(staffId != null) {
+        List<Schedule> schedules = scheduleService.filterSchedules(identityNumber, date, place);
+        if(identityNumber != null) {
             schedules = schedules.stream()
-                                .filter(s -> s.getStaffId().equals(staffId))
+                                .filter(s -> s.getIdentityNumber().equals(identityNumber))
                                 .collect(Collectors.toList());
         }
         if(date != null) {

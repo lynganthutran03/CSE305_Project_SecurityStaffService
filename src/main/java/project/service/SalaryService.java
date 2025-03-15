@@ -15,8 +15,8 @@ public class SalaryService {
         this.leaveRequestService = leaveRequestService;
     }
 
-    public double calculateSalary(Long staffId) {
-        int approvedLeaves = leaveRequestService.getApprovedLeaveCount(staffId);
+    public double calculateSalary(String identityNumber) {
+        int approvedLeaves = leaveRequestService.getApprovedLeaveCount(identityNumber);
         int extraLeaves = Math.max(0, approvedLeaves - ALLOWED_LEAVES);
         double fine = extraLeaves * FINE_PER_EXTRA_LEAVE;
         return BASE_SALARY - fine;

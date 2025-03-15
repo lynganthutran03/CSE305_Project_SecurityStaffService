@@ -1,6 +1,8 @@
 package project.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,24 +55,20 @@ public class LeaveRequestController {
         }
     }
 
-    @GetMapping("/staff/{staffId}")
-    public ResponseEntity<List<LeaveRequest>> getLeaveRequestByStaff(@PathVariable("staffId") int staffId) {
+    @GetMapping("/staff/{identityNumber}")
+    public ResponseEntity<List<LeaveRequest>> getLeaveRequestByStaff(@PathVariable("identityNumber") String identityNumber) {
         List<LeaveRequest> staffLeave = LeaveRequestStorage.getAllLeaveRequests()
             .stream()
-            .filter(leave -> leave.getStaffId() == staffId)
+            .filter(leave -> leave.getIdentityNumber().equals(identityNumber))
             .toList();
-        if(staffLeave.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return ResponseEntity.ok(staffLeave);
+            return ResponseEntity.ok(staffLeave.isEmpty() ? Collections.emptyList() : staffLeave);
     }
 
-    @GetMapping("/count/{staffId}")
-    public ResponseEntity<Integer> getApprovedLeaveCount(@PathVariable("staffId") Long staffId) {
+    @GetMapping("/count/{identityNumber}")
+    public ResponseEntity<Integer> getApprovedLeaveCount(@PathVariable("identityNumber") String identityNumber) {
         int count = (int)LeaveRequestStorage.getAllLeaveRequests()
             .stream()
-            .filter(request -> request.getStaffId().equals(staffId) && request.getStatus() == LeaveStatus.APPROVED)
+            .filter(request -> Objects.equals(request.getIdentityNumber(), identityNumber) && request.getStatus() == LeaveStatus.APPROVED)
             .count();
 
         return ResponseEntity.ok(count);

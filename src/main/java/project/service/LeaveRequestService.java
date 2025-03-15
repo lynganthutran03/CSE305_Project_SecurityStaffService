@@ -31,9 +31,9 @@ public class LeaveRequestService {
     }
 
     // Update leave request status
-    public Optional<LeaveRequest> updateLeaveStatus(Long staffId, LeaveStatus status) {
+    public Optional<LeaveRequest> updateLeaveStatus(String identityNumber, LeaveStatus status) {
         for (LeaveRequest request : leaveRequests) {
-            if (request.getStaffId().equals(staffId)) {
+            if (request.getIdentityNumber().equals(identityNumber)) {
                 request.setStatus(status);
                 return Optional.of(request);
             }
@@ -42,10 +42,10 @@ public class LeaveRequestService {
     }
 
     // Get the number of approved leaves for a staff member
-    public int getApprovedLeaveCount(Long staffId) {
+    public int getApprovedLeaveCount(String identityNumber) {
         int count = 0;
         for (LeaveRequest request : leaveRequests) {
-            if (request.getStaffId().equals(staffId) && request.getStatus() == LeaveStatus.APPROVED) {
+            if (request.getIdentityNumber().equals(identityNumber) && request.getStatus() == LeaveStatus.APPROVED) {
                 count++;
             }
         }

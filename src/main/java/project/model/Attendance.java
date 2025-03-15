@@ -6,7 +6,7 @@ import java.util.List;
 import project.status.AttendanceStatus;
 
 public class Attendance {
-    private Long staffId;
+    private String identityNumber;
     private String date;
     private AttendanceStatus status;
     
@@ -14,18 +14,18 @@ public class Attendance {
 
     public Attendance() {}
     
-    public Attendance(Long staffId, AttendanceStatus status) {
-        this.staffId = staffId;
+    public Attendance(String identityNumber, AttendanceStatus status) {
+        this.identityNumber = identityNumber;
         this.status = status;
         this.date = java.time.LocalDate.now().toString();
     }
 
-    public Long getStaffId() {
-        return staffId;
+    public String getIdentityNumber() {
+        return identityNumber;
     }
 
-    public void setStaffId(Long staffId) {
-        this.staffId = staffId;
+    public void setStaffId(String identityNumber) {
+        this.identityNumber = identityNumber;
     }
 
     public String getDate() {
