@@ -18,36 +18,33 @@ header {
 
 main {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 90%;
     margin-top: 20px;
 }
 
-.sidebar {
-    width: 250px;
-    padding: 20px;
-    background: #ddd;
+.top-nav {
     display: flex;
-    flex-direction: column;
-    border-radius: 5px;
-}
-
-.sidebar h2 {
-    margin-bottom: 10px;
-}
-
-.sidebar button {
-    margin: 5px 0;
+    justify-content: center;
+    gap: 10px;
     padding: 10px;
-    cursor: pointer;
+    background: #333;
+    width: 100%;
+}
+
+.top-nav button {
+    padding: 10px 15px;
     border: none;
     background: #007bff;
     color: white;
     border-radius: 5px;
     font-size: 16px;
+    cursor: pointer;
     transition: 0.3s;
 }
 
-.sidebar button:hover {
+.top-nav button:hover {
     background: #0056b3;
 }
 
@@ -59,6 +56,9 @@ main {
     margin-left: 20px;
     border-radius: 5px;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
 }
 
 /* Form styling */
@@ -110,6 +110,7 @@ main {
 .table-container {
     width: 100%;
     max-width: 600px;
+    margin: auto;
     margin-top: 20px;
     overflow-x: auto;
 }
@@ -126,7 +127,7 @@ main {
 .styled-table th, .styled-table td {
     padding: 10px;
     border: 1px solid #ddd;
-    text-align: left;
+    text-align: center;
 }
 
 .styled-table th {
@@ -146,4 +147,5 @@ main {
 #functionDisplay {
     padding: 20px;
     font-size: 18px;
+    text-align: center;
 }

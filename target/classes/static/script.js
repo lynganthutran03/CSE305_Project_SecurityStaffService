@@ -66,18 +66,64 @@ function updateUI() {
     if (userRole === "staff") {
         document.getElementById("staffFunctions").style.display = "block";
         document.getElementById("managerFunctions").style.display = "none";
-        showFunction("viewSchedule");
+        showFunction("attendanceMarking");
     } else if (userRole === "manager") {
         document.getElementById("staffFunctions").style.display = "none";
         document.getElementById("managerFunctions").style.display = "block";
         showFunction("monitoring");
     }
+
+    document.getElementById("functionDisplay").innerHTML = "<h3>Welcome! Please select an option.</h3>";
+}
+
+function showStaffFunctions() {
+    document.getElementById("staffFunctions").style.display = "flex";
+    document.getElementById("managerFunctions").style.display = "none";
+}
+
+function showManagerFunctions() {
+    document.getElementById("staffFunctions").style.display = "none";
+    document.getElementById("managerFunctions").style.display = "flex";
 }
 
 function showFunction(functionName) {
     const display = document.getElementById("functionDisplay");
     switch (functionName) {
 
+        case "checkAttendance":
+            display.innerHTML = `
+                <h3>Check Attendance</h3>
+                <button onclick="fetchAttendance()">View My Attendance</button>
+                <div id="attendanceResult"></div>
+            `;
+
+        case "attendanceMarking":
+            display.innerHTML = `
+                <h3>Mark Attendance</h3>
+                <div class="form-container">
+                    <label>Date: <input type="date" id="attendanceDate"></label>
+                    <label>Place: <input type="text" id="attendancePlace"></label>
+
+                    <div class="options">
+                        <!-- Radio buttons for attendance status -->
+                        <label><input type="radio" name="attendanceStatus" value="Present" id="presentStatus"> Present</label>
+                        <label><input type="radio" name="attendanceStatus" value="Late" id="lateStatus"> Late</label>
+                        <label><input type="radio" name="attendanceStatus" value="Absent" id="absentStatus"> Absent</label>
+                    </div>
+    
+                    <!-- Submit Button -->
+                <button onclick="submitAttendance()">Submit</button>
+                </div>
+            `;
+            break;
+
+        case "attendanceSummary":
+            display.innerHTML = `
+                <h3>Attendance Submitted!</h3>
+                <p>Your attendance has been recorded successfully.</p>
+            `;
+            break;
+            
         case "viewSchedule":
             display.innerHTML = `
                 <h3>Viewing Schedule</h3>
@@ -149,6 +195,15 @@ function showFunction(functionName) {
                 </div>
             `;
             break;
+        
+        //FOR MANAGER SIDE ONLY
+        case "viewAllAttendance":
+            display.innerHTML = `
+                <h3>Staff Attendance</h3>
+                <div id="attendanceResult" class="table-container"></div>
+            `;
+            fetchAttendance();
+            break;
 
         case "createRoutine":
             display.innerHTML = `
@@ -169,7 +224,7 @@ function showFunction(functionName) {
                 <h3>Check Leave Requests</h3>
             </div>
                 <div class="table-container">
-                    <table class="styled-table>
+                    <table class="styled-table">
                         <thead>
                             <tr>
                                 <th>Leave ID</th>
@@ -231,6 +286,78 @@ function showFunction(functionName) {
         default:
             display.innerHTML = "<h3>Unknown Action</h3><p>Please select a valid option.</p>";
     }
+}
+
+//Attendance
+function showAttendanceForm() {
+    const container = document.getElementById("attendanceContainer");
+    container.innerHTML = `
+        <label>Date: <input type="date" id="attendanceDate"></label>
+        <label>Place: <input type="text" id="attendancePlace"></label>
+        <div>
+            <label><input type="radio" name="attendanceStatus" value="Present"> Present</label>
+            <label><input type="radio" name="attendanceStatus" value="Late"> Late</label>
+            <label><input type="radio" name="attendanceStatus" value="Absent"> Absent</label>
+        </div>
+        <button onclick="submitAttendance()">Submit</button>
+        <p id="attendanceSummary"></p>
+    `;
+}
+
+function submitAttendance() {
+    const identityNumber = localStorage.getItem("identityNumber"); 
+    const date = document.getElementById("attendanceDate").value;
+    const place = document.getElementById("attendancePlace").value;
+    const status = document.querySelector('input[name="attendanceStatus"]:checked');
+
+    if (!date || !place || !status) {
+        alert("Please fill all fields and select attendance status.");
+        return;
+    }
+
+    fetch("http://localhost:8080/api/attendance/mark", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            identityNumber: identityNumber,
+            date: date,
+            place: place,
+            status: status.value.toUpperCase()
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Attendance marked successfully!");
+        showFunction("attendanceSummary");
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Failed to mark attendance.");
+    });
+}
+
+function fetchAttendance() {
+    fetch(`http://localhost:8080/api/attendance/view`)
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById("attendanceResult");
+            if (data.length === 0) {
+                resultDiv.innerHTML = "<p>No attendance records found.</p>";
+                return;
+            }
+            let tableHTML = "<table class='styled-table'><thead><tr><th>Staff ID</th><th>Date</th><th>Place</th><th>Status</th></tr></thead><tbody>";
+            data.forEach(record => {
+                tableHTML += `<tr><td>${record.identityNumber}</td><td>${record.date}</td><td>${record.place}</td><td>${record.status}</td></tr>`;
+            });
+            tableHTML += "</tbody></table>";
+            resultDiv.innerHTML = tableHTML;
+        })
+        .catch(error => {
+            console.error("Error fetching attendance:", error);
+            alert("Failed to fetch attendance.");
+        });
 }
 
 // Fetch schedules from the backend (list stored in-memory on the backend)
@@ -432,7 +559,11 @@ function fetchSalaryStaff() {
             return response.json();
         })
         .then(data => {
-            document.getElementById("salaryResult").innerHTML = `<strong> Your salary: $${data.toFixed(2)}</strong>`;
+            if (!isNaN(data)) {
+                document.getElementById("salaryResult").innerHTML = `<strong> Your salary: $${data.toFixed(2)}</strong>`;
+            } else {
+                document.getElementById("salaryResult").innerHTML = `<p style="color:red;">Error fetching salary</p>`;
+            }            
         })
         .catch(error => {
             document.getElementById("salaryResult").innerHTML = `<p style="color:red;">Error fetching salary</p>`;

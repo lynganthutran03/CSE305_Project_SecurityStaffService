@@ -9,32 +9,33 @@
 <body>
     <header>
         <h1>Security Management System</h1>
+        <nav class="top-nav">
+            <div id="userNav">
+                <div id="staffFunctions" style="display: none;">
+                    <button onclick="showFunction('checkAttendance')">Check Attendance</button>
+                    <button onclick="showFunction('viewSchedule')">View Schedule</button>
+                    <button onclick="showFunction('requestLeave')">Request Leave</button>
+                    <button onclick="showFunction('checkLeaves')">Check Leaves</button>
+                    <button onclick="showFunction('showSalary')">Show Salary</button>
+                    <button id="logoutButton" onclick="logout()">Log Out</button>
+                </div>
+
+                <div id="managerFunctions" style="display: none;">
+                    <button onclick="showFunction('viewAllAttendance')">View All Attendance</button>
+                    <button onclick="showFunction('createRoutine')">Create Routine</button>
+                    <button onclick="showFunction('checkLeaveRequests')">Check Leave Requests</button>
+                    <button onclick="showFunction('monitoring')">Monitoring</button>
+                    <button id="logoutButton" onclick="logout()">Log Out</button>
+                </div>
+            </div>
+        </nav>
     </header>
 
     <main>
-        <aside class="sidebar">
-            <div id="staffFunctions" style="display: none;">
-                <h2>Staff</h2>
-                <button onclick="showFunction('viewSchedule')">View Schedule</button>
-                <button onclick="showFunction('requestLeave')">Request Leave</button>
-                <button onclick="showFunction('checkLeaves')">Check Leaves</button>
-                <button onclick="showFunction('showSalary')">Show Salary</button>
-                <button onclick="logout()">Log Out</button>
-            </div>
-
-            <div id="managerFunctions" style="display: none;">
-                <h2>Manager</h2>
-                <button onclick="showFunction('createRoutine')">Create Routine</button>
-                <button onclick="showFunction('checkLeaveRequests')">Check Leave Requests</button>
-                <button onclick="showFunction('monitoring')">Monitoring</button>
-                <button onclick="logout()">Log Out</button>
-            </div>
-        </aside>
-
         <section class="content">
             <div id="functionDisplay">Loading...</div>
+            <div id="attendanceFormContainer"></div>
         </section>
-
     </main>
 
     <script src="script.js"></script>

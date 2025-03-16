@@ -1,23 +1,18 @@
 package project.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import project.status.AttendanceStatus;
 
 public class Attendance {
     private String identityNumber;
     private String date;
+    private String place;
     private AttendanceStatus status;
-    
-    private static List<Attendance> attendanceRecords = new ArrayList<>();
 
-    public Attendance() {}
-    
-    public Attendance(String identityNumber, AttendanceStatus status) {
+    public Attendance(String identityNumber, String place, AttendanceStatus status) {
         this.identityNumber = identityNumber;
-        this.status = status;
         this.date = java.time.LocalDate.now().toString();
+        this.place = place;
+        this.status = status;
     }
 
     public String getIdentityNumber() {
@@ -36,19 +31,19 @@ public class Attendance {
         this.date = date;
     }
 
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
     public AttendanceStatus getStatus() {
         return status;
     }
 
     public void setStatus(AttendanceStatus status) {
         this.status = status;
-    }
-    
-    public static void addAttendance(Attendance attendance) {
-        attendanceRecords.add(attendance);
-    }
-    
-    public static List<Attendance> getAllAttendance() {
-        return attendanceRecords;
     }
 }

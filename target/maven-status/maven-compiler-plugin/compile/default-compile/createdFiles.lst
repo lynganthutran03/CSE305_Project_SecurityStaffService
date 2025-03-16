@@ -21,6 +21,7 @@ project\controller\RoutineMonitorController.class
 project\model\Attendance.class
 project\status\LeaveStatus.class
 project\service\AttendanceService.class
+project\dto\AttendanceDTO.class
 project\controller\SalaryController.class
 project\service\LeaveRequestService.class
 project\model\User.class
