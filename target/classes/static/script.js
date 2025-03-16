@@ -403,7 +403,6 @@ function addRoutine() {
     .then(response => response.text())
     .then(data => {
         alert("Routine added successfully!");
-        showFunction("monitoring");
         setTimeout(fetchRoutineMonitoring, 0);
     })
     .catch(error => {
@@ -465,16 +464,18 @@ function fetchLeaveRequests() {
 
             data.forEach(leave => {
                 leaveRequestsList.innerHTML += `
-                    <tr>
+                    <tr id="leave-${leave.leaveId}">
                         <td>${leave.leaveId}</td>
                         <td>${leave.identityNumber}</td>
                         <td>${leave.startDate}</td>
                         <td>${leave.endDate}</td>
                         <td>${leave.reason}</td>
-                        <td>${leave.status}</td>
-                        <td>
-                            <button onclick="updateLeaveStatus(${leave.leaveId}, 'APPROVED')">Approve</button>
-                            <button onclick="updateLeaveStatus(${leave.leaveId}, 'REJECTED')">Reject</button>
+                        <td id="status-${leave.leaveId}">${leave.status}</td>
+                        <td id="action-buttons-${leave.leaveId}">
+                            ${leave.status === 'PENDING' ? `
+                                <button id="approve-${leave.leaveId}" onclick="updateLeaveStatus(${leave.leaveId}, 'APPROVED')">Approve</button>
+                                <button id="reject-${leave.leaveId}" onclick="updateLeaveStatus(${leave.leaveId}, 'REJECTED')">Reject</button>
+                            ` : ''}
                         </td>
                     </tr>
                 `;
@@ -497,8 +498,13 @@ function updateLeaveStatus(leaveId, status) {
         return response.json();
     })
     .then(data => {
+        const actionButtonsCell = document.getElementById(`action-buttons-${leaveId}`);
+        const statusCell = document.getElementById(`status-${leaveId}`);
+        
+        actionButtonsCell.innerHTML = '';
+        statusCell.innerHTML = status;
+
         alert(`Leave request ${status.toLowerCase()} successfully!`);
-        fetchLeaveRequests(); 
     })
     .catch(error => console.error("Error updating leave status:", error));
 }
