@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", checkLoginStatus);
+document.addEventListener("DOMContentLoaded", showLoginScreen);
 
 //Login
 function showLoginScreen() {
