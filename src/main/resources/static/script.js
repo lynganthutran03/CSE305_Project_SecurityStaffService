@@ -21,7 +21,7 @@ function handleLogin() {
     const password = document.getElementById("password").value.trim();
 
     if (!identityNumber || !password) {
-        alert("Please enter both Identity Number and password.");
+        alert("Please enter both identity number and password.");
         return;
     }
 
@@ -73,7 +73,7 @@ function updateUI() {
         showFunction("monitoring");
     }
 
-    document.getElementById("functionDisplay").innerHTML = "<h3>Welcome! Please select an option.</h3>";
+    document.getElementById("functionDisplay").innerHTML = "Please check your attendance";
 }
 
 function showStaffFunctions() {
@@ -189,7 +189,6 @@ function showFunction(functionName) {
             display.innerHTML = `
                 <div class="form-container">
                     <h3>Show Salary</h3>
-                    <label>Enter your staff Id: <input type="text" id="salaryIdentityNumber"></label>
                     <button onclick="fetchSalaryStaff()">Check Salary</button>
                     <p id="salaryResult"></p>
                 </div>
@@ -247,22 +246,23 @@ function showFunction(functionName) {
 
         case "monitoring":
             display.innerHTML = `
-                <div class="form-container">
-                    <h3>Monitoring</h3>
-                    <h4>Salary Monitoring</h4>
-                    <label>Enter staff Id: <input type="text" id="salaryIdentityNumber" autocomplete="off"></label>
-                    <button onclick="fetchSalaryManager()">Check</button>
-                    <p id="leaveCount"></p>
-                    <p id="salaryResult"></p>
-                    <p id="calculateSalaryResult"></p>
-                </div>
+                <div class="monitoring-container">
+                    <div class="form-container">
+                        <h4>Salary Monitoring</h4>
+                        <label>Enter staff Id: <input type="text" id="salaryIdentityNumber" autocomplete="off"></label>
+                        <button onclick="fetchSalaryManager()">Check</button>
+                        <p id="leaveCount"></p>
+                        <p id="salaryResult"></p>
+                        <p id="calculateSalaryResult"></p>
+                    </div>
 
-                <div class="form-container">
-                    <h4>Routine Monitoring</h4>
-                    <label>Staff ID: <input type="text" id="identityNumber" autocomplete="off"></label>
-                    <label>Date: <input type="date" id="date"></label>
-                    <label>Place: <input type="text" id="place"></label>
-                    <button onclick="setTimeout(fetchRoutineMonitoring, 100)">Filter</button>
+                    <div class="form-container">
+                        <h4>Routine Monitoring</h4>
+                        <label>Staff ID: <input type="text" id="identityNumber" autocomplete="off"></label>
+                        <label>Date: <input type="date" id="date"></label>
+                        <label>Place: <input type="text" id="place"></label>
+                        <button onclick="setTimeout(fetchRoutineMonitoring, 100)">Filter</button>
+                    </div>
                 </div>
                 
                 <div class="table-container">
@@ -552,25 +552,13 @@ function fetchCheckLeaveRequestsForStaff() {
 }
 
 //Fetch salary for staff
-function fetchSalaryStaff() {
-    const salaryIdentityNumber = document.getElementById("salaryIdentityNumber").value;
-    if(!salaryIdentityNumber) {
-        alert("PLease enter your Id");
-        return;
-    }
-
-    fetch(`http://localhost:8080/api/salary/${salaryIdentityNumber}`)
+function fetchSalaryStaff(identityNumber) {
+    fetch(`http://localhost:8080/api/salary/${identityNumber}`)
         .then(response => {
             if(!response.ok) throw new Error("Error fetching salary.");
             return response.json();
         })
-        .then(data => {
-            if (!isNaN(data)) {
-                document.getElementById("salaryResult").innerHTML = `<strong> Your salary: $${data.toFixed(2)}</strong>`;
-            } else {
-                document.getElementById("salaryResult").innerHTML = `<p style="color:red;">Error fetching salary</p>`;
-            }            
-        })
+        .then(data => {document.getElementById("salaryResult").innerHTML = `<strong> Your salary: $${data.toFixed(2)}</strong>`})
         .catch(error => {
             document.getElementById("salaryResult").innerHTML = `<p style="color:red;">Error fetching salary</p>`;
             console.error("Error: ", error);
