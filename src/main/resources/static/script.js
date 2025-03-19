@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", showLoginScreen);
 function showLoginScreen() {
     const display = document.getElementById("functionDisplay");
     display.innerHTML = `
-        <div class="login-container">
+        <div class="form-container">
             <h3>Login</h3>
             <label>Identity Number: <input type="text" id="identityNumber" autocomplete="off"></label>
             <label>Password: <input type="password" id="password" autocomplete="off"></label>
@@ -392,7 +392,6 @@ function addRoutine() {
     let place = document.getElementById("place").value;
     let shiftTime = document.getElementById("shiftTime").value;
     let date = document.getElementById("date").value;
-    let messageTarget = "functionDisplay";
 
     let schedule = { identityNumber, place, shiftTime, date };
 
@@ -401,19 +400,14 @@ function addRoutine() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(schedule)
     })
-    .then(response => {
-        if(!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-    })
+    .then(response => response.text())
     .then(data => {
-        showMessage(messageTarget, "Routine added successfully!", true);
-        fetchSchedules();
+        alert("Routine added successfully!");
+        setTimeout(fetchRoutineMonitoring, 0);
     })
     .catch(error => {
         console.error("Error:", error);
-        showMessage(messageTarget, "Failed to add routine: " + error.message, false);
+        alert("Failed to add routine: " + error.message);
     });
 }
 
@@ -423,10 +417,9 @@ function requestLeave() {
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
     const reason = document.getElementById("reason").value;
-    let messageTarget = "functionDisplay";
 
     if (!identityNumber || !startDate || !endDate || !reason) {
-        showMessage(messageTarget, "Please fill all fields", false);
+        alert("Please fill all fields");
         return;
     }
 
@@ -447,7 +440,8 @@ function requestLeave() {
         return response.json();  // Parse JSON response
     })
     .then(data => {
-        showMessage(messageTarget, "Leave request sent successfully!", true);
+        alert(data.message);  // Access the message from the response JSON
+        showFunction('viewSchedule');
     })
     .catch(error => console.error("Error requesting leave:", error));
 }
