@@ -1,25 +1,5 @@
 document.addEventListener("DOMContentLoaded", showLoginScreen);
 
-function showMessage(targetElement, message, type) {
-    if (!targetElement || !targetElement.parentNode) return;
-    
-    let messageBox = targetElement.parentNode.querySelector('.message-box');
-    
-    if (!messageBox) {
-        messageBox = document.createElement('div');
-        messageBox.classList.add('message-box');
-        targetElement.parentNode.appendChild(messageBox);
-    }
-
-    messageBox.textContent = message;
-    messageBox.className = `message-box ${type}`;
-
-    setTimeout(() => {
-        messageBox.textContent = '';
-        messageBox.classList.remove(type);
-    }, 3000);
-}
-
 //Login
 function showLoginScreen() {
     const display = document.getElementById("functionDisplay");
@@ -28,7 +8,6 @@ function showLoginScreen() {
             <h3>Login</h3>
             <label>Identity Number: <input type="text" id="identityNumber" autocomplete="off"></label>
             <label>Password: <input type="password" id="password" autocomplete="off"></label>
-            <p id="loginMessage" class="message"></p>
             <button onclick="handleLogin()">Login</button>
         </div>
     `;
@@ -42,14 +21,8 @@ function handleLogin() {
     const password = document.getElementById("password").value.trim();
 
     if (!identityNumber || !password) {
-        showMessage(password, "Please fill in all fields.", "error");
+        alert("Please enter both Identity Number and password.");
         return;
-    }
-
-    if (!identityNumber && !password) {
-        showMessage(password, "Login successful!", "success");
-    } else {
-        showMessage(password, "Invalid credentials!", "error");
     }
 
     fetch("http://localhost:8080/api/auth/login", {
@@ -73,11 +46,13 @@ function handleLogin() {
     })
     .catch(error => {
         console.error("Login error:", error);
+        alert("Invalid identity number or password.");
     });
 }
 
 function checkLoginStatus() {
     const userRole = localStorage.getItem("userRole");
+
     if (!userRole) {
         showLoginScreen();
     } else {
@@ -238,7 +213,6 @@ function showFunction(functionName) {
                     <label>Place: <input type="text" id="place"></label><br>
                     <label>Shift Time: <input type="text" id="shiftTime"></label><br>
                     <label>Date: <input type="date" id="date"></label><br>
-                    <p id="addRoutineError" class="error-message"></p>
                     <button onclick="addRoutine()">Add Routine</button>
                 </div>
             `;
@@ -335,11 +309,9 @@ function submitAttendance() {
     const date = document.getElementById("attendanceDate").value;
     const place = document.getElementById("attendancePlace").value;
     const status = document.querySelector('input[name="attendanceStatus"]:checked');
-    const errorMessage = document.getElementById("attendanceError");
 
     if (!date || !place || !status) {
-        errorMessage.textContent = "Please fill all fields and select attendance status.";
-        errorMessage.style.display = "block";
+        alert("Please fill all fields and select attendance status.");
         return;
     }
 
@@ -357,19 +329,16 @@ function submitAttendance() {
     })
     .then(response => response.json())
     .then(data => {
-        showMessage(messageTarget, "Attendance marked successfully!", true);
+        alert("Attendance marked successfully!");
         showFunction("attendanceSummary");
     })
     .catch(error => {
         console.error("Error:", error);
-        errorMessage.textContent = "Failed to mark attendance.";
-        errorMessage.style.display = "block";
+        alert("Failed to mark attendance.");
     });
 }
 
 function fetchAttendance() {
-    let messageTarget = "functionDisplay";
-
     fetch(`http://localhost:8080/api/attendance/view`)
         .then(response => response.json())
         .then(data => {
@@ -387,7 +356,7 @@ function fetchAttendance() {
         })
         .catch(error => {
             console.error("Error fetching attendance:", error);
-            showMessage(messageTarget, "Failed to fetch attendance.", false);
+            alert("Failed to fetch attendance.");
         });
 }
 
@@ -423,7 +392,7 @@ function addRoutine() {
     let place = document.getElementById("place").value;
     let shiftTime = document.getElementById("shiftTime").value;
     let date = document.getElementById("date").value;
-    const errorMessage = document.getElementById("addRoutineError");
+    let messageTarget = "functionDisplay";
 
     let schedule = { identityNumber, place, shiftTime, date };
 
@@ -444,8 +413,7 @@ function addRoutine() {
     })
     .catch(error => {
         console.error("Error:", error);
-        errorMessage.textContent = "Failed to add routine";
-        errorMessage.style.display = "block";
+        showMessage(messageTarget, "Failed to add routine: " + error.message, false);
     });
 }
 
@@ -478,11 +446,10 @@ function requestLeave() {
         if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
         return response.json();  // Parse JSON response
     })
-    .then(data => showMessage(messageTarget, "Leave request sent successfully!", true))
-    .catch(error => {
-        console.error("Error requesting leave:", error);
-        showMessage(messageTarget, "Error requesting leave.", false);
-    });
+    .then(data => {
+        showMessage(messageTarget, "Leave request sent successfully!", true);
+    })
+    .catch(error => console.error("Error requesting leave:", error));
 }
 
 // Fetch leave requests (from the backend)
@@ -525,8 +492,6 @@ function fetchLeaveRequests() {
 
 // Update leave status (send the update to the backend)
 function updateLeaveStatus(leaveId, status) {
-    let messageTarget = "functionDisplay";
-
     fetch(`http://localhost:8080/api/leaves/${leaveId}/status`, {
         method: "PUT",
         headers: {
@@ -545,21 +510,16 @@ function updateLeaveStatus(leaveId, status) {
         actionButtonsCell.innerHTML = '';
         statusCell.innerHTML = status;
 
-        showMessage(messageTarget, `Leave request ${status.toLowerCase()} successfully!`, true);
+        alert(`Leave request ${status.toLowerCase()} successfully!`);
     })
-    .catch(error => {
-        console.error("Error updating leave status:", error);
-        showMessage(messageTarget, "Error updating leave status", false);
-    });
+    .catch(error => console.error("Error updating leave status:", error));
 }
 
 //Check leave request for staff
 function fetchCheckLeaveRequestsForStaff() {
     const identityNumber = document.getElementById("identityNumberCheck").value.trim();
-    let messageTarget = "functionDisplay";
-
     if (!identityNumber) {
-        showMessage(messageTarget, "Please enter a Staff ID.", false);
+        alert("Please enter a Staff ID.");
         return;
     }
 
@@ -600,10 +560,8 @@ function fetchCheckLeaveRequestsForStaff() {
 //Fetch salary for staff
 function fetchSalaryStaff() {
     const salaryIdentityNumber = document.getElementById("salaryIdentityNumber").value;
-    let messageTarget = "functionDisplay";
-
     if(!salaryIdentityNumber) {
-        showMessage(messageTarget, "PLease enter your Id", false);
+        alert("PLease enter your Id");
         return;
     }
 
@@ -628,10 +586,8 @@ function fetchSalaryStaff() {
 //Fetch salary for manager
 function fetchSalaryManager() {
     let salaryIdentityNumber = document.getElementById("salaryIdentityNumber").value;
-    let messageTarget = "functionDisplay";
-
     if(!salaryIdentityNumber) {
-        showMessage(messageTarget, "Please enter a staff Id.", false);
+        alert("Please enter a staff Id.");
         return;
     }
 
@@ -710,6 +666,5 @@ function fetchRoutineMonitoring() {
 function logout() {
     localStorage.removeItem("userRole");
     localStorage.removeItem("identityNumber");
-    showMessage("functionDisplay", "Logging out...", true);
     location.reload(); // Refresh to reset UI
 }
