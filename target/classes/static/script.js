@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", showLoginScreen);
 function showLoginScreen() {
     const display = document.getElementById("functionDisplay");
     display.innerHTML = `
-        <div class="form-container">
+        <div class="login-container">
             <h3>Login</h3>
             <label>Identity Number: <input type="text" id="identityNumber" autocomplete="off"></label>
             <label>Password: <input type="password" id="password" autocomplete="off"></label>
