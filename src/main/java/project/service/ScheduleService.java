@@ -68,6 +68,15 @@ public class ScheduleService {
             .collect(Collectors.toList());
     }
 
+    public void updateSchedule(Schedule schedule) {
+        for (int i = 0; i < schedules.size(); i++) {
+            if (schedules.get(i).getIdentityNumber().equals(schedule.getIdentityNumber())) {
+                schedules.set(i, schedule);
+                return;
+            }
+        }
+    }    
+
     public boolean deleteSchedule(String identityNumber) {
         return schedules.removeIf(schedule -> schedule.getIdentityNumber().equals(identityNumber));
     }

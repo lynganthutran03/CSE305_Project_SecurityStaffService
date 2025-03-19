@@ -5,6 +5,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +26,6 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    private List<Schedule> schedules = new ArrayList<>();
-
     @PostMapping("/add")
     public ResponseEntity<String> addSchedule(@RequestBody Schedule schedule) {
         scheduleService.addSchedule(schedule);
@@ -40,13 +39,15 @@ public class ScheduleController {
 
     @PutMapping("/update/{identityNumber}")
     public ResponseEntity<String> updateSchedule(@PathVariable String identityNumber, @RequestBody Schedule updatedSchedule) {
-        for (Schedule schedule : schedules) {
-            if (schedule.getIdentityNumber() == identityNumber) {
-                schedule.setIdentityNumber(updatedSchedule.getIdentityNumber());
-                schedule.setDate(updatedSchedule.getDate());
-                schedule.setShiftTime(updatedSchedule.getShiftTime());
-                return ResponseEntity.ok("Schedule updated successfully");
-            }
+        Optional<Schedule> optionalSchedule = scheduleService.getScheduleById(identityNumber);
+        if (optionalSchedule.isPresent()) {
+            Schedule existingSchedule = optionalSchedule.get();
+            existingSchedule.setDate(updatedSchedule.getDate());
+            existingSchedule.setShiftTime(updatedSchedule.getShiftTime());
+            existingSchedule.setPlace(updatedSchedule.getPlace());
+
+            scheduleService.updateSchedule(existingSchedule);
+            return ResponseEntity.ok("Schedule updated successfully");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Schedule not found");
     }
@@ -65,15 +66,13 @@ public class ScheduleController {
                 return ResponseEntity.badRequest().body(Collections.emptyList());
             }
         }
-    
         List<Schedule> filteredSchedules = scheduleService.filterSchedules(identityNumber, parsedDate, place);
-    
         return ResponseEntity.ok(filteredSchedules != null ? filteredSchedules : new ArrayList<>());
     }
 
     @DeleteMapping("/delete/{identityNumber}")
-    public ResponseEntity<String> deleteSchedule(@PathVariable String identityNumber) {
-        boolean removed = scheduleService.deleteSchedule((String) identityNumber);
+        public ResponseEntity<String> deleteSchedule(@PathVariable String identityNumber) {
+        boolean removed = scheduleService.deleteSchedule(identityNumber);
         if (removed) {
             return ResponseEntity.ok("Schedule deleted successfully");
         } else {

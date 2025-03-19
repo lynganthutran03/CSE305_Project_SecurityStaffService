@@ -86,6 +86,29 @@ function showManagerFunctions() {
     document.getElementById("managerFunctions").style.display = "flex";
 }
 
+function toggleForm(formId) {
+    document.querySelectorAll(".form-container").forEach(section => {
+        section.classList.add("hidden");
+    });
+
+    document.getElementById(formId).classList.remove("hidden");
+    document.getElementById("backButton").classList.remove("hidden");
+}
+
+function goBack() {
+    document.querySelectorAll(".form-container, .table-container, .hidden-content").forEach(el => {
+        el.classList.add("hidden");
+    });
+
+    const routineTable = document.getElementById("routineMonitoringTable");
+    if (routineTable) {
+        routineTable.classList.add("hidden");
+        routineTable.style.display = "none";
+    }
+
+    document.querySelector(".form-container:first-child").classList.remove("hidden");
+}
+
 function showFunction(functionName) {
     const display = document.getElementById("functionDisplay");
     switch (functionName) {
@@ -178,7 +201,7 @@ function showFunction(functionName) {
                             </tr>
                         </thead>
                         <tbody id="myLeaveRequestsList">
-                            <tr><td colspan="5">Enter Staff ID and click 'Check'.</td></tr>
+                            <tr><td colspan="5">Enter staff ID and click 'Check'.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -246,39 +269,64 @@ function showFunction(functionName) {
 
         case "monitoring":
             display.innerHTML = `
-                <div class="monitoring-container">
-                    <div class="form-container">
-                        <h4>Salary Monitoring</h4>
-                        <label>Enter staff Id: <input type="text" id="salaryIdentityNumber" autocomplete="off"></label>
-                        <button onclick="fetchSalaryManager()">Check</button>
-                        <p id="leaveCount"></p>
-                        <p id="salaryResult"></p>
-                        <p id="calculateSalaryResult"></p>
-                    </div>
-
-                    <div class="form-container">
-                        <h4>Routine Monitoring</h4>
-                        <label>Staff ID: <input type="text" id="identityNumber" autocomplete="off"></label>
-                        <label>Date: <input type="date" id="date"></label>
-                        <label>Place: <input type="text" id="place"></label>
-                        <button onclick="setTimeout(fetchRoutineMonitoring, 100)">Filter</button>
-                    </div>
+                <div id="formSelection" class="form-container">
+                    <button onclick="toggleForm('salaryMonitoring')">Staff Leaves Monitoring</button>
+                    <button onclick="toggleForm('routineMonitoring')">Routine Monitoring</button>
+                    <button onclick="toggleForm('updateSchedule')">Update Schedule</button>
+                    <button onclick="toggleForm('deleteSchedule')">Delete Schedule</button>
                 </div>
-                
-                <div class="table-container">
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                <th>Staff ID</th>
-                                <th>Place</th>
-                                <th>Shift Time</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="routineMonitoringList">
-                            <tr><td colspan="4">Enter filters and click 'Filter'.</td></tr>
-                        </tbody>
-                    </table>
+
+                <div id="salaryMonitoring" class="form-container hidden">
+                    <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
+                    <h4>Staff Leaves Monitoring</h4>
+                    <label>Enter staff Id: <input type="text" id="salaryIdentityNumber" autocomplete="off"></label>
+                    <button onclick="fetchSalaryManager()">Check</button>
+                    <p id="leaveCount"></p>
+                </div>
+
+                <div id="routineMonitoring" class="form-container hidden">  
+                    <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
+                    <h4>Routine Monitoring</h4>
+                    <label>Staff ID: <input type="text" id="identityNumber" autocomplete="off"></label>
+                    <label>Date: <input type="date" id="date"></label>
+                    <label>Place: <input type="text" id="place"></label>
+                    <button onclick="setTimeout(fetchRoutineMonitoring, 100)">Filter</button>
+                </div>
+
+                <div id="updateSchedule" class="form-container hidden">
+                    <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
+                    <h4>Update Schedule</h4>
+                    <label>Staff ID: <input type="text" id="updateIdentityNumber"></label>
+                    <label>Date: <input type="date" id="updateDate"></label>
+                    <label>Shift Time: <input type="text" id="updateShiftTime"></label>
+                    <label>Place: <input type="text" id="updatePlace"></label>
+                    <button onclick="updateSchedule()">Update</button>
+                    <p id="updateResult"></p>
+                </div>
+
+                <div id="deleteSchedule" class="form-container hidden">
+                    <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
+                    <h4>Delete Schedule</h4>
+                    <label>Enter Staff ID: <input type="text" id="deleteIdentityNumber"></label>
+                    <button onclick="deleteSchedule()">Delete</button>
+                    <p id="deleteResult"></p>
+                </div>
+
+                <div id="routineMonitoringTable" class="table-container hidden">
+                    <h4>Routine Schedule</h4>
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff ID</th>
+                                    <th>Place</th>
+                                    <th>Shift Time</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="routineMonitoringList">
+                                <tr><td colspan="4">Enter filter and click 'Filter'.</td></tr>
+                            </tbody>
+                        </table>
                 </div>
             `;
             break;
@@ -408,6 +456,62 @@ function addRoutine() {
     .catch(error => {
         console.error("Error:", error);
         alert("Failed to add routine: " + error.message);
+    });
+}
+
+//Update schedule
+function updateSchedule() {
+    const identityNumber = document.getElementById("updateIdentityNumber").value;
+    const date = document.getElementById("updateDate").value;
+    const shiftTime = document.getElementById("updateShiftTime").value;
+    const place = document.getElementById("updatePlace").value;
+
+    if (!identityNumber || !date || !shiftTime || !place) {
+        document.getElementById("updateResult").innerHTML = "<p style='color: red;'>All fields are required!</p>";
+        return;
+    }
+
+    const updatedSchedule = {
+        identityNumber,
+        date,
+        shiftTime,
+        place
+    };
+
+    fetch(`http://localhost:8080/api/schedules/update/${identityNumber}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedSchedule)
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("updateResult").innerHTML = `<p style='color: green;'>${data}</p>`;
+    })
+    .catch(error => {
+        document.getElementById("updateResult").innerHTML = "<p style='color: red;'>Error updating schedule</p>";
+        console.error("Error:", error);
+    });
+}
+
+// Delete schedule
+function deleteSchedule() {
+    const identityNumber = document.getElementById("deleteIdentityNumber").value;
+
+    if (!identityNumber) {
+        alert("Please enter a Staff ID to delete.");
+        return;
+    }
+
+    fetch(`http://localhost:8080/api/schedules/delete/${identityNumber}`, {
+        method: "DELETE"
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("deleteResult").innerText = data;
+    })
+    .catch(error => {
+        console.error("Error deleting schedule:", error);
+        document.getElementById("deleteResult").innerText = "Error deleting schedule.";
     });
 }
 
@@ -642,6 +746,7 @@ function fetchRoutineMonitoring() {
             })
             .catch(error => console.error("Error fetching routine monitoring data:", error));
     }, 200);
+    document.getElementById("routineMonitoringTable").style.display = "block";
 }
 
 // Logout function
