@@ -8,11 +8,13 @@ public class Attendance {
     private String identityNumber;
     private LocalDate date;
     private AttendanceStatus status;
+    private String shiftTime;
 
-    public Attendance(String identityNumber, LocalDate date, AttendanceStatus status) {
+    public Attendance(String identityNumber, LocalDate date, AttendanceStatus status, String shiftTime) {
         this.identityNumber = identityNumber;
         this.date = date;
         this.status = status;
+        this.shiftTime = shiftTime;
     }
 
     public String getIdentityNumber() {
@@ -37,5 +39,13 @@ public class Attendance {
 
     public void setStatus(AttendanceStatus status) {
         this.status = status;
+    }
+
+    public String getShiftTime() {
+        return shiftTime;
+    }
+
+    public void setShiftTime(String shiftTime) {
+        this.shiftTime = shiftTime;
     }
 }

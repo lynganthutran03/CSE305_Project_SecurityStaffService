@@ -1,6 +1,8 @@
 package project.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +16,16 @@ public class Schedule {
     private LocalDate date;
     private static List<Schedule> schedules = new ArrayList<>();
 
-    public Schedule() {}
+    public Schedule() {
+    }
 
     public Schedule(String identityNumber, String place, String shiftTime, LocalDate date) {
         this.identityNumber = identityNumber;
         this.place = place;
-        this.shiftTime = shiftTime;
+        this.shiftTime = formatShiftTime(shiftTime);
         this.date = date;
     }
-    
+
     public String getIdentityNumber() {
         return identityNumber;
     }
@@ -39,12 +42,21 @@ public class Schedule {
         this.place = place;
     }
 
-    public String getShiftTime() {
-        return shiftTime;
+    public String formatShiftTime(String time) {
+        try {
+            LocalTime parsedTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
+            return parsedTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid time format: " + time);
+        }
     }
 
     public void setShiftTime(String shiftTime) {
         this.shiftTime = shiftTime;
+    }
+
+    public String getShiftTime() {
+        return shiftTime;
     }
 
     public LocalDate getDate() {

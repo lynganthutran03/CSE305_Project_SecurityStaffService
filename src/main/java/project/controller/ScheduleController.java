@@ -32,7 +32,6 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-
     @PostMapping("/add")
     public ResponseEntity<String> addSchedule(@RequestBody Schedule schedule) {
         scheduleService.addSchedule(schedule);
@@ -45,12 +44,17 @@ public class ScheduleController {
     }
 
     @PutMapping("/update/{identityNumber}")
-    public ResponseEntity<String> updateSchedule(@PathVariable String identityNumber, @RequestBody Schedule updatedSchedule) {
+    public ResponseEntity<String> updateSchedule(@PathVariable String identityNumber,
+            @RequestBody Schedule updatedSchedule) {
         Optional<Schedule> optionalSchedule = scheduleService.getScheduleById(identityNumber);
         if (optionalSchedule.isPresent()) {
             Schedule existingSchedule = optionalSchedule.get();
+            
             existingSchedule.setDate(updatedSchedule.getDate());
-            existingSchedule.setShiftTime(updatedSchedule.getShiftTime());
+
+            String formattedTime = updatedSchedule.formatShiftTime(updatedSchedule.getShiftTime());
+            existingSchedule.setShiftTime(formattedTime);
+
             existingSchedule.setPlace(updatedSchedule.getPlace());
 
             scheduleService.updateSchedule(existingSchedule);
@@ -64,13 +68,13 @@ public class ScheduleController {
         if (identityNumber == null || identityNumber.isBlank()) {
             return ResponseEntity.badRequest().body(Collections.emptyList());
         }
-    
+
         List<Schedule> filteredSchedules = scheduleService.getSchedulesByStaff(identityNumber);
         return ResponseEntity.ok(filteredSchedules);
     }
 
     @DeleteMapping("/delete/{identityNumber}")
-        public ResponseEntity<String> deleteSchedule(@PathVariable String identityNumber) {
+    public ResponseEntity<String> deleteSchedule(@PathVariable String identityNumber) {
         boolean removed = scheduleService.deleteSchedule(identityNumber);
         if (removed) {
             return ResponseEntity.ok("Schedule deleted successfully");

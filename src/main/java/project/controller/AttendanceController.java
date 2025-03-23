@@ -1,8 +1,6 @@
 package project.controller;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +47,7 @@ public class AttendanceController {
         String shiftTime = scheduledShift.get().getShiftTime();
         AttendanceStatus status = attendanceService.determineAttendanceStatus(shiftTime);
 
-        Attendance attendance = new Attendance(identityNumber, today, status);
+        Attendance attendance = new Attendance(identityNumber, today, status, shiftTime);
         attendanceService.markAttendance(attendance);
 
         return ResponseEntity.ok("Attendance marked as " + status);

@@ -250,20 +250,23 @@ function showFunction(functionName) {
         case "monitoring":
             display.innerHTML = `
                 <div id="formSelection" class="form-container">
-                    <button onclick="toggleForm('salaryMonitoring')">Staff Leaves Monitoring</button>
+                    <button onclick="toggleForm('salaryMonitoring')">Staff Salary Monitoring</button>
                     <button onclick="toggleForm('routineMonitoring')">Routine Monitoring</button>
                     <button onclick="toggleForm('updateSchedule')">Update Schedule</button>
                     <button onclick="toggleForm('deleteSchedule')">Delete Schedule</button>
                 </div>
 
+                <!-- Salary Monitoring Form -->
                 <div id="salaryMonitoring" class="form-container hidden">
                     <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
-                    <h4>Staff Leaves Monitoring</h4>
+                    <h4>Staff Salary Monitoring</h4>
                     <label>Enter staff Id: <input type="text" id="salaryIdentityNumber" autocomplete="off"></label>
                     <button onclick="fetchSalaryManager()">Check</button>
                     <p id="leaveCount"></p>
+                    <p id="calculateSalaryResult"></p>
                 </div>
 
+                <!-- Routine Monitoring Form -->
                 <div id="routineMonitoring" class="form-container hidden">  
                     <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
                     <h4>Routine Monitoring</h4>
@@ -287,6 +290,7 @@ function showFunction(functionName) {
                     </div>
                 </div>
 
+                <!-- Update Schedule Form -->
                 <div id="updateSchedule" class="form-container hidden">
                     <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
                     <h4>Update Schedule</h4>
@@ -298,6 +302,7 @@ function showFunction(functionName) {
                     <p id="updateResult"></p>
                 </div>
 
+                <!-- Delete Schedule Form -->
                 <div id="deleteSchedule" class="form-container hidden">
                     <button id="backButton" class="hidden" onclick="goBack()">← Back</button>
                     <h4>Delete Schedule</h4>
@@ -305,7 +310,6 @@ function showFunction(functionName) {
                     <button onclick="deleteSchedule()">Delete</button>
                     <p id="deleteResult"></p>
                 </div>
-
             `;
             break;
 
@@ -341,6 +345,7 @@ function fetchAttendance() {
             return response.json();
         })
         .then(data => {
+            console.log("Attendance data fetched:", data);
             const resultDiv = document.getElementById("attendanceResult");
 
             if (!resultDiv) {
@@ -353,14 +358,17 @@ function fetchAttendance() {
                 return;
             }
 
-            resultDiv.innerHTML = data.map(record => `
+            resultDiv.innerHTML = "";
+            data.forEach(record => {
+                const row = `
                 <tr>
                     <td>${record.identityNumber}</td>
                     <td>${formatShiftTime(record.shiftTime) || "N/A"}</td>
                     <td>${record.date}</td>
                     <td>${record.status}</td>
-                </tr>
-            `).join("");
+                </tr>`;
+                resultDiv.innerHTML += row;
+            });
         })
         .catch(error => {
             console.error("Error fetching attendance:", error);
@@ -637,7 +645,7 @@ function fetchSalaryStaff(identityNumber) {
 
 //Fetch salary for manager
 function fetchSalaryManager() {
-    let salaryIdentityNumber = document.getElementById("salaryIdentityNumber").value;
+    let salaryIdentityNumber = document.getElementById("salaryIdentityNumber").value.trim();
     if(!salaryIdentityNumber) {
         alert("Please enter a staff Id.");
         return;
