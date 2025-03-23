@@ -1,8 +1,5 @@
 package project.controller;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +7,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import project.model.Schedule;
 import project.service.ScheduleService;
@@ -25,6 +31,7 @@ public class ScheduleController {
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
+
 
     @PostMapping("/add")
     public ResponseEntity<String> addSchedule(@RequestBody Schedule schedule) {
@@ -53,21 +60,13 @@ public class ScheduleController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<Schedule>> getFilterSchedules(
-            @RequestParam(required = false) String identityNumber,
-            @RequestParam(required = false) String date,
-            @RequestParam(required = false) String place) {
-        LocalDate parsedDate = null;
-        if (date != null && !date.trim().isEmpty()) {
-            try {
-                parsedDate = LocalDate.parse(date);
-            }
-            catch (DateTimeParseException e) {
-                return ResponseEntity.badRequest().body(Collections.emptyList());
-            }
+    public ResponseEntity<List<Schedule>> getFilterSchedules(@RequestParam(required = false) String identityNumber) {
+        if (identityNumber == null || identityNumber.isBlank()) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
         }
-        List<Schedule> filteredSchedules = scheduleService.filterSchedules(identityNumber, parsedDate, place);
-        return ResponseEntity.ok(filteredSchedules != null ? filteredSchedules : new ArrayList<>());
+    
+        List<Schedule> filteredSchedules = scheduleService.getSchedulesByStaff(identityNumber);
+        return ResponseEntity.ok(filteredSchedules);
     }
 
     @DeleteMapping("/delete/{identityNumber}")

@@ -1,12 +1,13 @@
 package project.storage;
 
-import project.model.Attendance;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import project.model.Attendance;
+
 public class AttendanceStorage {
-    private static List<Attendance> attendanceList = new ArrayList<>();
+    private static final List<Attendance> attendanceList = new ArrayList<>();
 
     public static void addAttendance(Attendance attendance) {
         attendanceList.add(attendance);

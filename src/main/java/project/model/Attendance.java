@@ -1,17 +1,17 @@
 package project.model;
 
+import java.time.LocalDate;
+
 import project.status.AttendanceStatus;
 
 public class Attendance {
     private String identityNumber;
-    private String date;
-    private String place;
+    private LocalDate date;
     private AttendanceStatus status;
 
-    public Attendance(String identityNumber, String place, AttendanceStatus status) {
+    public Attendance(String identityNumber, LocalDate date, AttendanceStatus status) {
         this.identityNumber = identityNumber;
-        this.date = java.time.LocalDate.now().toString();
-        this.place = place;
+        this.date = date;
         this.status = status;
     }
 
@@ -23,20 +23,12 @@ public class Attendance {
         this.identityNumber = identityNumber;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
     }
 
     public AttendanceStatus getStatus() {

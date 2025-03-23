@@ -1,23 +1,25 @@
 package project.service;
 
-import org.springframework.stereotype.Service;
-import project.model.Schedule;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
+import project.model.Schedule;
+
 @Service
 public class ScheduleService {
-    private List<Schedule> schedules = new ArrayList<>();
+    private final List<Schedule> schedules = new ArrayList<>();
 
     public boolean isScheduleValid(Schedule newSchedule) {
         return schedules.stream()
             .noneMatch(s -> s.getIdentityNumber().equals(newSchedule.getIdentityNumber()) &&
                             s.getDate().equals(newSchedule.getDate()) &&
-                            s.getPlace().equalsIgnoreCase(newSchedule.getPlace()));
+                            s.getPlace().equalsIgnoreCase(newSchedule.getPlace()) &&
+                            s.getShiftTime().equals(newSchedule.getShiftTime()));
     }
 
     public Schedule addSchedule(Schedule schedule) {
@@ -41,13 +43,16 @@ public class ScheduleService {
     }
 
     public List<Schedule> getSchedulesByStaff(String identityNumber) {
-        List<Schedule> staffSchedules = new ArrayList<>();
-        for (Schedule schedule : schedules) {
-            if (schedule.getIdentityNumber().equals(identityNumber)) {
-                staffSchedules.add(schedule);
-            }
-        }
-        return staffSchedules;
+        return schedules.stream()
+            .filter(schedule -> schedule.getIdentityNumber().equalsIgnoreCase(identityNumber))
+            .collect(Collectors.toList());
+    }
+
+    
+    public Optional<Schedule> getScheduleForStaff(String identityNumber, LocalDate date) {
+        return schedules.stream()
+            .filter(schedule -> schedule.getIdentityNumber().equals(identityNumber) && schedule.getDate().equals(date))
+            .findFirst();
     }
 
     public List<Schedule> getSchedulesByPlace(String place) {
